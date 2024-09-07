@@ -1,0 +1,14 @@
+com\shortify\utils\Utils.class
+com\shortify\filters\ConnectionFilterDB.class
+com\shortify\Interceptors\TransactionalJdbc.class
+com\shortify\utils\Validate.class
+com\shortify\repositories\UrlRepository.class
+com\shortify\Main.class
+com\shortify\Controlers\CreateServlet.class
+com\shortify\configs\ProducersResources.class
+com\shortify\models\Url.class
+com\shortify\Interceptors\TransactionalInterceptor.class
+com\shortify\Controlers\RedirectionServlet.class
+com\shortify\utils\ServiceJDBCException.class
+com\shortify\configs\MySQLConnection.class
+com\shortify\Services\UrlService.class
