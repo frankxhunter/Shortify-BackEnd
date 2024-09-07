@@ -20,8 +20,8 @@ public class UserService {
         User loggedUser = null;
 
         try {
-            if (Validate.isValidUser(user)) {
-                User tempUser = user.getUsername() != null && user.getUsername() != null
+            if (user != null && Validate.isValidUser(user)) {
+                User tempUser = user.getUsername() != null
                         ? userRepository.getUserByUsername(user.getUsername())
                         : userRepository.getUserByEmail(user.getEmail());
                 if (tempUser != null) {

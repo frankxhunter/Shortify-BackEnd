@@ -25,7 +25,7 @@ public class TransactionalInterceptor {
             conn.setAutoCommit(false);
         }
         try{
-            System.out.println("Iniciando transaccion con la base de datos");
+            System.out.println("Iniciando transaccion con la base de datos\n\n");
             Object result = context.proceed();
             conn.commit();
             return result;

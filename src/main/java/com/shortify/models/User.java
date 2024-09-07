@@ -5,7 +5,8 @@ public class User {
     private int id;
     private String username;
     private String email;
-    // El password solo debe ponerse al momento de crear el user y luego eliminarse,por seguridad
+    // El password solo debe ponerse al momento de crear el user y luego
+    // eliminarse,por seguridad
     private String password;
 
     public User() {
@@ -24,7 +25,8 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = username.trim();
+        if (username != null)
+            this.username = username.trim();
     }
 
     public String getEmail() {
@@ -32,7 +34,8 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email.trim();
+        if (email != null)
+            this.email = email.trim();
     }
 
     public String getPassword() {
@@ -40,7 +43,8 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password.trim();
+        if (password != null)
+            this.password = password.trim();
     }
 
     @Override
@@ -48,11 +52,11 @@ public class User {
         boolean result = false;
         if (obj instanceof User) {
             User user = (User) obj;
-            if (user.getPassword().equals(this.password)
-                    && (user.getUsername().equals(this.getUsername())
-                            || user.getEmail().equals(this.email))) {
-                                result = true;
-            }
+            if (user.getPassword() != null && user.getPassword().equals(this.password))
+                if ((user.getUsername() != null && user.getUsername().equals(this.getUsername()))
+                        || (user.getEmail() != null && user.getEmail().equals(this.email))) {
+                    result = true;
+                }
         }
         return result;
     }

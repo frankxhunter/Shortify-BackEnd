@@ -1,3 +1,7 @@
+com\shortify\Controlers\UserRegister\SignInServlet.class
+com\shortify\models\User.class
+com\shortify\repositories\UserRepository.class
+com\shortify\utils\UserRegisterException.class
 com\shortify\utils\Utils.class
 com\shortify\filters\ConnectionFilterDB.class
 com\shortify\Interceptors\TransactionalJdbc.class
@@ -7,8 +11,10 @@ com\shortify\Main.class
 com\shortify\Controlers\CreateServlet.class
 com\shortify\configs\ProducersResources.class
 com\shortify\models\Url.class
+com\shortify\Services\UserService.class
 com\shortify\Interceptors\TransactionalInterceptor.class
 com\shortify\Controlers\RedirectionServlet.class
+com\shortify\Controlers\UserRegister\LogInServlet.class
 com\shortify\utils\ServiceJDBCException.class
 com\shortify\configs\MySQLConnection.class
 com\shortify\Services\UrlService.class

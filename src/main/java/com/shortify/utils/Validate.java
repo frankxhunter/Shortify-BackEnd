@@ -20,9 +20,9 @@ public class Validate {
 
     public static boolean isValidUser(User user) {
         boolean result = false;
-        if (user.getPassword() != null && user.getPassword().equals("")) {
-            if (user.getUsername() != null && user.getUsername().equals("")
-            || user.getEmail() != null && user.getEmail().equals("")) {
+        if (user.getPassword() != null && !user.getPassword().equals("")) {
+            if (user.getUsername() != null && !user.getUsername().equals("")
+            || user.getEmail() != null && !user.getEmail().equals("")) {
                 result = true;
             }
         }
