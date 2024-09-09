@@ -65,13 +65,13 @@ public class UserRepository {
         if (user != null) {
 
             try (PreparedStatement ps = con.prepareStatement("""
-                    INSERT INTO user
+                    INSERT INTO users
                     (username, email, password)
                     values (?, ?, ?)
                     """)) {
                 ps.setString(1, user.getUsername());
                 ps.setString(2, user.getEmail());
-                ps.setString(2, user.getPassword());
+                ps.setString(3, user.getPassword());
 
                 ps.executeUpdate();
 

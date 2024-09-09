@@ -1,4 +1,3 @@
-com\shortify\Controlers\UserRegister\SignInServlet.class
 com\shortify\models\User.class
 com\shortify\repositories\UserRepository.class
 com\shortify\utils\UserRegisterException.class

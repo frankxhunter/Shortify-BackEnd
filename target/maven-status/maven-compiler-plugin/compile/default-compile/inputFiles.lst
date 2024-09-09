@@ -2,6 +2,7 @@ C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Controlers\UserRegis
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Controlers\RedirectionServlet.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Interceptors\TransactionalInterceptor.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Services\UserService.java
+C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Controlers\UserRegister\SignUpServlet.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Main.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Interceptors\TransactionalJdbc.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\models\Url.java
@@ -9,7 +10,6 @@ C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\utils\Utils.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\configs\MySQLConnection.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\repositories\UrlRepository.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\utils\Validate.java
-C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\Controlers\UserRegister\SignInServlet.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\filters\ConnectionFilterDB.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\repositories\UserRepository.java
 C:\Frank\Proyectos\Java\shortify\src\main\java\com\shortify\utils\UserRegisterException.java

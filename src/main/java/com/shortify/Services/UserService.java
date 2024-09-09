@@ -41,7 +41,7 @@ public class UserService {
         return loggedUser;
     }
 
-    public User signInUser(User userNew) throws UserRegisterException {
+    public User signUp(User userNew) throws UserRegisterException {
         User userCreated = null;
 
         try {
@@ -50,7 +50,7 @@ public class UserService {
                 if (userRepository.getUserByUsername(userNew.getUsername()) != null) {
                     throw new UserRegisterException("User name is already taken");
                 } else if (userRepository.getUserByEmail(userNew.getEmail()) != null) {
-                    throw new UserRegisterException("A user with this username already exists");
+                    throw new UserRegisterException("A user with this email already exists");
                 } else {
                     // En este caso no existe ningun usuario con el mismo username o email
                     userRepository.createUser(userNew);

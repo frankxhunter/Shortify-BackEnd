@@ -27,6 +27,14 @@
     <servlet-name>LogInServlet</servlet-name>
     <url-pattern>/users/login</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>SignUpServlet</servlet-name>
+    <servlet-class>com.shortify.Controlers.UserRegister.SignUpServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SignUpServlet</servlet-name>
+    <url-pattern>/users/signup</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>RedirectionServlet</servlet-name>
