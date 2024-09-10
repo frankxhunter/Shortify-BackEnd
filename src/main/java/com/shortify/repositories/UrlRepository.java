@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.shortify.configs.MySQLConnection;
 import com.shortify.models.Url;
@@ -44,6 +46,22 @@ public class UrlRepository {
         }
         return url;
     }
+
+public List<Url> getUrlsByUser(int user_id) throws SQLException{
+    List<Url> list = new ArrayList<>();
+    try (PreparedStatement ps = conn.prepareStatement("""
+        SELECT * FROM urls
+        WHERE user_id = ?
+        """)) {
+    ps.setInt(1, user_id);
+
+    ResultSet result = ps.executeQuery();
+    while (result.next()) {
+        list.add(getUrl(result)) ;
+    }
+}
+    return list;
+}
 
     public void save(Url url) throws SQLException {
         if (findByShortURL(url.getShortUrl()) == null) {

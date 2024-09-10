@@ -18,6 +18,14 @@
     <servlet-name>CreateServlet</servlet-name>
     <url-pattern>/create</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>UrlManagement</servlet-name>
+    <servlet-class>com.shortify.Controlers.UrlManagement</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UrlManagement</servlet-name>
+    <url-pattern>/urls</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>LogInServlet</servlet-name>

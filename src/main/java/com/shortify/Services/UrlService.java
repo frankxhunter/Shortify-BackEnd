@@ -1,6 +1,7 @@
 package com.shortify.Services;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import com.shortify.models.Url;
 import com.shortify.models.User;
@@ -50,5 +51,17 @@ public class UrlService {
         }
 
         return shortUrl;
+    }
+
+    public List<Url> getListUrlsByUser(User user){
+        List<Url> list = null;
+        if(user != null){
+            try {
+                list = urlRepository.getUrlsByUser(user.getId());
+            } catch (SQLException e) {
+                throw new ServiceJDBCException(e.getMessage(), e);
+            }
+        }
+        return list;
     }
 }
