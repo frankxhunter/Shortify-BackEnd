@@ -49,11 +49,12 @@ public class UrlRepository {
         if (findByShortURL(url.getShortUrl()) == null) {
             try (PreparedStatement ps = conn.prepareStatement("""
                     INSERT INTO urls
-                    (shorturl, originalurl)
-                    VALUES (?, ?)
+                    (shorturl, originalurl, user_id)
+                    VALUES (?, ?, ?)
                     """)) {
                 ps.setString(1, url.getShortUrl());
                 ps.setString(2, url.getOrginalUrl());
+                ps.setInt(3, url.getUser_id());
 
                 ps.executeUpdate();
 

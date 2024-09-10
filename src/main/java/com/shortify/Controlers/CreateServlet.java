@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.shortify.Services.UrlService;
+import com.shortify.models.User;
+import com.shortify.utils.Utils;
 import com.shortify.utils.Validate;
 
 import jakarta.inject.Inject;
@@ -20,10 +22,11 @@ public class CreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String originalUrl = req.getParameter("url");
+        User user = Utils.getUserFromSession(req);
         if(originalUrl != null){
             if(Validate.validateHttpAddress(originalUrl)){
 
-                String shortUrl = urlService.generateUrlAndSave(originalUrl);
+                String shortUrl = urlService.generateUrlAndSave(originalUrl, user);
                 resp.setContentType("application/json");
                 resp.setCharacterEncoding("UTF-8");
             

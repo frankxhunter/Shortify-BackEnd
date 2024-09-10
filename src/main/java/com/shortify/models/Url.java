@@ -4,6 +4,7 @@ public class Url {
     private int id; 
     private String shortUrl;
     private String orginalUrl;
+    private int user_id;
 
     
 
@@ -32,6 +33,13 @@ public class Url {
     public void setOrginalUrl(String orginalUrl) {
         this.orginalUrl = orginalUrl;
     }
+    public int getUser_id() {
+        return user_id;
+    }
+    public void setUser_id(int id_user) {
+        this.user_id = id_user;
+    }
+    
 
     
 }

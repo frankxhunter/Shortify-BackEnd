@@ -3,6 +3,7 @@ package com.shortify.Services;
 import java.sql.SQLException;
 
 import com.shortify.models.Url;
+import com.shortify.models.User;
 import com.shortify.repositories.UrlRepository;
 import com.shortify.utils.ServiceJDBCException;
 
@@ -28,13 +29,18 @@ public class UrlService {
         return originalURL;
     }
 
-    public String generateUrlAndSave(String originalUrl) {
-        String shortUrl = com.shortify.utils.Utils.generateHash(originalUrl);
+    public String generateUrlAndSave(String originalUrl, User user) {
+        int user_id = 0;
+        if(user != null){
+            user_id = user.getId();
+        }
+        String shortUrl = com.shortify.utils.Utils.generateHash(originalUrl, user_id);
 
         if (shortUrl != null) {
             Url url = new Url();
             url.setOrginalUrl(originalUrl);
             url.setShortUrl(shortUrl);
+            url.setUser_id(user_id);
 
             try {
                 urlRepository.save(url);
