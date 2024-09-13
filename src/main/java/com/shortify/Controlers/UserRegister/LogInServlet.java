@@ -43,8 +43,13 @@ public class LogInServlet extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required fields");
             }
         } else {
-            resp.setStatus(HttpServletResponse.SC_CONFLICT);
-            resp.getWriter().write("User is already logged in");
+            // resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+                    resp.getWriter().write(Utils.convertObjectToJson(
+                        session.getAttribute("user")
+                    ));
         }
 
     }
