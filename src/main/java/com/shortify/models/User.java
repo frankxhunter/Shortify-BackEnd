@@ -1,8 +1,11 @@
 package com.shortify.models;
 
+import com.google.gson.annotations.Expose;
+
 public class User {
 
     private int id;
+    @Expose
     private String username;
     private String email;
     // El password solo debe ponerse al momento de crear el user y luego

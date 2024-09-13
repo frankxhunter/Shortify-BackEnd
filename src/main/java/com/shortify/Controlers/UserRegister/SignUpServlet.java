@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.shortify.Services.UserService;
 import com.shortify.models.User;
 import com.shortify.utils.UserRegisterException;
+import com.shortify.utils.Utils;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -32,8 +33,10 @@ public class SignUpServlet extends HttpServlet {
                     User registerUser = userService.signUp(user);
                     if (registerUser != null) {
                         session.setAttribute("user", registerUser);
+                        resp.setContentType("application/json");
+                        resp.setCharacterEncoding("UTF-8");
                         resp.setStatus(HttpServletResponse.SC_OK);
-                        resp.getWriter().write("User successfully sign up");
+                        resp.getWriter().write(Utils.convertObjectToJson(registerUser));
                     } else {
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid data format");
                     }

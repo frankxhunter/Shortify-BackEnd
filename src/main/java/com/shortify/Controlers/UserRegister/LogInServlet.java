@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.shortify.Services.UserService;
 import com.shortify.models.User;
+import com.shortify.utils.Utils;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -30,8 +31,10 @@ public class LogInServlet extends HttpServlet {
                 User loginUser = userService.logInUser(user);
                 if (loginUser != null) {
                     session.setAttribute("user", loginUser);
+                    resp.setContentType("application/json");
+                    resp.setCharacterEncoding("UTF-8");
                     resp.setStatus(HttpServletResponse.SC_OK);
-                    resp.getWriter().write("User successfully logged in");
+                    resp.getWriter().write(Utils.convertObjectToJson(loginUser));
                 }else{
                     resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid username or password");
                 }

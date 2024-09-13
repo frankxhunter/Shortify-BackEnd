@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.shortify.models.User;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,5 +32,11 @@ public class Utils {
     public static User getUserFromSession(HttpServletRequest req){
         User user = (User)req.getSession().getAttribute("user");
         return user;
+    }
+
+    public static String convertObjectToJson(Object obj){
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String result = gson.toJson(obj);
+        return result;
     }
 }
