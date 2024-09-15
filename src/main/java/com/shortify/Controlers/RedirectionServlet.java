@@ -3,6 +3,7 @@ package com.shortify.Controlers;
 import java.io.IOException;
 
 import com.shortify.Services.UrlService;
+import com.shortify.utils.Utils;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -23,7 +24,7 @@ public class RedirectionServlet extends HttpServlet {
             resp.sendRedirect(originalUrl);
         }
         else{
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, """
+            Utils.sendErrorJson(resp, HttpServletResponse.SC_NOT_FOUND, """
                     This URL is not avaliable!
                     """);
         }

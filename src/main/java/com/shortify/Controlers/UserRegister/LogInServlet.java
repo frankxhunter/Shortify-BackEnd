@@ -36,11 +36,11 @@ public class LogInServlet extends HttpServlet {
                     resp.setStatus(HttpServletResponse.SC_OK);
                     resp.getWriter().write(Utils.convertObjectToJson(loginUser));
                 }else{
-                    resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid username or password");
+                    Utils.sendErrorJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "Invalid username or password");
                 }
 
             } else {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required fields");
+                Utils.sendErrorJson(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required fields");
             }
         } else {
             // resp.setStatus(HttpServletResponse.SC_CONFLICT);

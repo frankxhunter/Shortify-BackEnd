@@ -38,15 +38,15 @@ public class SignUpServlet extends HttpServlet {
                         resp.setStatus(HttpServletResponse.SC_OK);
                         resp.getWriter().write(Utils.convertObjectToJson(registerUser));
                     } else {
-                        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid data format");
+                        Utils.sendErrorJson(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid data format");
                     }
                     
                 } catch (UserRegisterException e) {
-                    resp.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
+                    Utils.sendErrorJson(resp, HttpServletResponse.SC_CONFLICT, e.getMessage());
                 }
 
             } else {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required fields");
+                Utils.sendErrorJson(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required fields");
             }
         } else {
             // resp.setStatus(HttpServletResponse.SC_CONFLICT);

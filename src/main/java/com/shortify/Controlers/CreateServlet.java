@@ -34,12 +34,12 @@ public class CreateServlet extends HttpServlet {
                 out.print("{\"shortUrl\": "+ "\""+shortUrl+"\"}");
                 out.flush();
             }else{
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, """
+                Utils.sendErrorJson(resp, HttpServletResponse.SC_BAD_REQUEST, """
                     The format of the url is invalid
                     """);
             }
         }else{
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, """
+            Utils.sendErrorJson(resp,HttpServletResponse.SC_BAD_REQUEST, """
                     You must send the url for short!!
                     """);
         }

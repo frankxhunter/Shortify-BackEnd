@@ -1,5 +1,6 @@
 package com.shortify.utils;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.shortify.models.User;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class Utils {
     public static String generateHash(String text, int user_id){
@@ -38,5 +40,13 @@ public class Utils {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         String result = gson.toJson(obj);
         return result;
+    }
+
+    public static void sendErrorJson(HttpServletResponse resp, int statusError, String msg) throws IOException{
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(statusError);
+        String jsonError = String.format("{\"error\": \"%s\"}", msg);
+        resp.getWriter().write(jsonError);
     }
 }
