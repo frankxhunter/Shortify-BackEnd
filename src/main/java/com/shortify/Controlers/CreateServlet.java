@@ -23,7 +23,7 @@ public class CreateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String originalUrl = req.getParameter("url");
         User user = Utils.getUserFromSession(req);
-        if(originalUrl != null){
+        if(originalUrl != null && originalUrl.trim().length()>0){
             if(Validate.validateHttpAddress(originalUrl)){
 
                 String shortUrl = urlService.generateUrlAndSave(originalUrl, user);
@@ -34,6 +34,7 @@ public class CreateServlet extends HttpServlet {
                 out.print("{\"shortUrl\": "+ "\""+shortUrl+"\"}");
                 out.flush();
             }else{
+                System.out.println("----\n"+originalUrl);
                 Utils.sendErrorJson(resp, HttpServletResponse.SC_BAD_REQUEST, """
                     The format of the url is invalid
                     """);
