@@ -26,7 +26,7 @@ public class UrlRepository {
     private Url getUrl(ResultSet result) throws SQLException {
         Url url = new Url();
         url.setId(result.getInt("id"));
-        url.setOrginalUrl(result.getString("originalurl"));
+        url.setOriginalUrl(result.getString("originalurl"));
         url.setShortUrl(result.getString("shorturl"));
         return url;
     }
@@ -71,7 +71,7 @@ public List<Url> getUrlsByUser(int user_id) throws SQLException{
                     VALUES (?, ?, ?)
                     """)) {
                 ps.setString(1, url.getShortUrl());
-                ps.setString(2, url.getOrginalUrl());
+                ps.setString(2, url.getOriginalUrl());
                 ps.setInt(3, url.getUser_id());
 
                 ps.executeUpdate();

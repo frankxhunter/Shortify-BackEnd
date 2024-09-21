@@ -22,7 +22,7 @@ public class UrlService {
         try {
             Url url = urlRepository.findByShortURL(shortUrl);
             if (url != null) {
-                originalURL = url.getOrginalUrl();
+                originalURL = url.getOriginalUrl();
             }
         } catch (SQLException e) {
             throw new ServiceJDBCException(e.getMessage(), e);
@@ -39,7 +39,7 @@ public class UrlService {
 
         if (shortUrl != null) {
             Url url = new Url();
-            url.setOrginalUrl(originalUrl);
+            url.setOriginalUrl(originalUrl);
             url.setShortUrl(shortUrl);
             url.setUser_id(user_id);
 

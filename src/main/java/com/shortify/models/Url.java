@@ -10,17 +10,17 @@ public class Url {
     private String shortUrl;
 
     @Expose
-    private String orginalUrl;
-    
+    private String originalUrl;
+
     private int user_id;
 
     public Url() {
     }
 
-    public Url(int id, String shorUrl, String orginalUrl) {
+    public Url(int id, String shorUrl, String originalUrl) {
         this.id = id;
         this.shortUrl = shorUrl;
-        this.orginalUrl = orginalUrl;
+        this.originalUrl = originalUrl;
     }
 
     public int getId() {
@@ -39,12 +39,12 @@ public class Url {
         this.shortUrl = shorUrl;
     }
 
-    public String getOrginalUrl() {
-        return orginalUrl;
+    public String getOriginalUrl() {
+        return originalUrl;
     }
 
-    public void setOrginalUrl(String orginalUrl) {
-        this.orginalUrl = orginalUrl;
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
     }
 
     public int getUser_id() {

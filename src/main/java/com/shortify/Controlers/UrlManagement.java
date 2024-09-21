@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.shortify.Services.UrlService;
 import com.shortify.models.Url;
 import com.shortify.models.User;
@@ -28,8 +26,7 @@ public class UrlManagement extends HttpServlet {
         User user = Utils.getUserFromSession(req);
         List<Url> listUrls= urlService.getListUrlsByUser(user);
         if(listUrls != null){
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String jsonData = gson.toJson(listUrls);
+            String jsonData = Utils.convertObjectToJson(listUrls);
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
