@@ -35,7 +35,7 @@ public class LogInServlet extends HttpServlet {
                     resp.setCharacterEncoding("UTF-8");
                     resp.setStatus(HttpServletResponse.SC_OK);
                     resp.getWriter().write(Utils.convertObjectToJson(loginUser));
-                }else{
+                } else {
                     Utils.sendErrorJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "Invalid username or password");
                 }
 
@@ -47,10 +47,21 @@ public class LogInServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-                    resp.getWriter().write(Utils.convertObjectToJson(
-                        session.getAttribute("user")
-                    ));
+            resp.getWriter().write(Utils.convertObjectToJson(
+                    session.getAttribute("user")));
         }
 
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = Utils.getUserFromSession(req);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(HttpServletResponse.SC_OK);
+        if(user == null){
+            user  = new User();
+        }
+        resp.getWriter().write(Utils.convertObjectToJson(user));
     }
 }
