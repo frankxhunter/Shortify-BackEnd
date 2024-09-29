@@ -1,6 +1,7 @@
 package com.shortify.Controlers.UserRegister;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import com.shortify.Services.UserService;
 import com.shortify.models.User;
@@ -21,8 +22,9 @@ public class LogInServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        if (session.getAttribute("user") == null) {
-            User user = new User();
+        User user = Utils.getUserFromSession(req);
+        if (user == null) {
+            user = new User();
             user.setUsername(req.getParameter("username"));
             user.setEmail(req.getParameter("email"));
             user.setPassword(req.getParameter("password"));
@@ -31,6 +33,7 @@ public class LogInServlet extends HttpServlet {
                 User loginUser = userService.logInUser(user);
                 if (loginUser != null) {
                     session.setAttribute("user", loginUser);
+                    session.setMaxInactiveInterval(1000000);
                     resp.setContentType("application/json");
                     resp.setCharacterEncoding("UTF-8");
                     resp.setStatus(HttpServletResponse.SC_OK);
@@ -43,12 +46,10 @@ public class LogInServlet extends HttpServlet {
                 Utils.sendErrorJson(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required fields");
             }
         } else {
-            // resp.setStatus(HttpServletResponse.SC_CONFLICT);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(Utils.convertObjectToJson(
-                    session.getAttribute("user")));
+            resp.getWriter().write(Utils.convertObjectToJson(user));
         }
 
     }
@@ -59,9 +60,8 @@ public class LogInServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_OK);
-        if(user == null){
-            user  = new User();
-        }
-        resp.getWriter().write(Utils.convertObjectToJson(user));
+        PrintWriter out = resp.getWriter();
+        out.write(Utils.convertObjectToJson(user));
+        out.flush();
     }
 }

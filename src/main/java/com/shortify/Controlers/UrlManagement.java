@@ -26,12 +26,11 @@ public class UrlManagement extends HttpServlet {
         User user = Utils.getUserFromSession(req);
         List<Url> listUrls= urlService.getListUrlsByUser(user);
         if(listUrls != null){
-            String jsonData = Utils.convertObjectToJson(listUrls);
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
             PrintWriter out = resp.getWriter();
-            out.write(jsonData);
+            out.write(Utils.convertObjectToJson(listUrls));
             out.flush();
         }
         
