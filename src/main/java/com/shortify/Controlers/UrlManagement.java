@@ -61,7 +61,7 @@ public class UrlManagement extends HttpServlet {
                         "Please check the parameters, as there seems to be error.");
                 return;
             }
-            Utils.sendRespJson(resp, 200, "Ok");
+            Utils.sendRespJson(resp, "Ok");
 
         } catch (NumberFormatException e) {
             Utils.sendErrorJson(resp, HttpServletResponse.SC_BAD_REQUEST,

@@ -27,7 +27,6 @@ public class RedirectionServlet extends HttpServlet {
         Url url = urlService.getOriginalUrl(path);
         if (url != null && url.getOriginalUrl() != null) {
             resp.sendRedirect(url.getOriginalUrl());
-            System.out.println("HOla mundo ");
             requestService.saveInfo(req, url);
         }
         else{

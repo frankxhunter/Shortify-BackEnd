@@ -18,8 +18,7 @@ public class InfoRequestService {
     @Inject
     InfoRequestRepository infoRequestRepository;
 
-    public List<InfoRequest> getAllRequestByUrlr(Url url){
-        int id_url = url.getId();
+    public List<InfoRequest> getAllRequestByUrlr(int id_url){
         try {
             List<InfoRequest> list = infoRequestRepository.getInfoRequestsByUrl(id_url);
             return list;

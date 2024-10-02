@@ -52,10 +52,10 @@ public class Utils {
         resp.getWriter().write(jsonError);
     }
 
-    public static void sendRespJson(HttpServletResponse resp, int statusError, Object obj) throws IOException {
+    public static void sendRespJson(HttpServletResponse resp, Object obj) throws IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(statusError);
+        resp.setStatus(200);
         if (obj != null) {
             String respJson = Utils.convertObjectToJson(obj);
             resp.getWriter().write(respJson);

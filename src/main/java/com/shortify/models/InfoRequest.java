@@ -1,12 +1,19 @@
 package com.shortify.models;
 
+import com.google.gson.annotations.Expose;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 public class InfoRequest {
     private int idUrl;
+
+    @Expose
     private String ip;
+    @Expose
     private String browser;
+    @Expose
     private String os;
+    @Expose
     private String architecture;
 
     public InfoRequest() {

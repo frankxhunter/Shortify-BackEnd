@@ -18,6 +18,16 @@
     <servlet-name>CreateServlet</servlet-name>
     <url-pattern>/create</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>InfoRequestServlet</servlet-name>
+    <servlet-class>com.shortify.Controlers.InfoRequestServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InfoRequestServlet</servlet-name>
+    <url-pattern>/urls/request</url-pattern>
+  </servlet-mapping>
+
   <servlet>
     <servlet-name>UrlManagement</servlet-name>
     <servlet-class>com.shortify.Controlers.UrlManagement</servlet-class>
