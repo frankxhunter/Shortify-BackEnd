@@ -52,26 +52,38 @@ public class Utils {
         resp.getWriter().write(jsonError);
     }
 
+    public static void sendRespJson(HttpServletResponse resp, int statusError, Object obj) throws IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(statusError);
+        if (obj != null) {
+            String respJson = Utils.convertObjectToJson(obj);
+            resp.getWriter().write(respJson);
+        }
+    }
+
     public static void setMaxAgeTimeSession(HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
         Cookie[] cookies = req.getCookies();
 
         session.getMaxInactiveInterval();
-    if (cookies != null) {
-        for (Cookie cookie : cookies) {
-            if ("JSESSIONID".equals(cookie.getName())) {
-                // Modificar los atributos de la cookie existente
-                cookie.setHttpOnly(true);
-                cookie.setSecure(true);  // Solo HTTPS
-                cookie.setPath("/");
-                
-                // Añadir SameSite=None a la cookie existente
-                resp.setHeader("Set-Cookie", cookie.getName() + "=" + cookie.getValue()
-                        + "; Path=" + cookie.getPath()
-                        + "; HttpOnly; Secure; SameSite=None");
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("JSESSIONID".equals(cookie.getName())) {
+                    // Modificar los atributos de la cookie existente
+                    cookie.setHttpOnly(true);
+                    cookie.setSecure(true); // Solo HTTPS
+                    cookie.setPath("/");
 
-                // No uses response.addCookie(), ya que esto agregaría una nueva cookie
+                    // Añadir SameSite=None a la cookie existente
+                    resp.setHeader("Set-Cookie", cookie.getName() + "=" + cookie.getValue()
+                            + "; Path=" + cookie.getPath()
+                            + "; HttpOnly; Secure; SameSite=None");
+
+                    // No uses response.addCookie(), ya que esto agregaría una nueva cookie
+                }
             }
         }
     }
-    }
+
+
 }

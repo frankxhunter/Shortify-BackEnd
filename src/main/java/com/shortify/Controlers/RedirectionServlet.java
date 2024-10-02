@@ -3,6 +3,7 @@ package com.shortify.Controlers;
 import java.io.IOException;
 
 import com.shortify.Services.UrlService;
+import com.shortify.models.InfoRequest;
 import com.shortify.utils.Utils;
 
 import jakarta.inject.Inject;
@@ -21,7 +22,10 @@ public class RedirectionServlet extends HttpServlet {
         String path = req.getPathInfo().substring(1);
         String originalUrl = urlService.getOriginalUrl(path);
         if (originalUrl != null) {
+            InfoRequest infoRequest = new InfoRequest(req);
+            System.out.println(infoRequest.toString());
             resp.sendRedirect(originalUrl);
+            System.out.println("HOla mundo ");
         }
         else{
             Utils.sendErrorJson(resp, HttpServletResponse.SC_NOT_FOUND, """

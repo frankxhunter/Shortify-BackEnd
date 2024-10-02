@@ -64,4 +64,12 @@ public class UrlService {
         }
         return list;
     }
+
+    public int updateOriginalUrl(User user, int idUrl, String newOriginalUrl) {
+        try {
+            return urlRepository.updateOriginalUrl(user.getId(), idUrl, newOriginalUrl);
+        } catch (SQLException e) {
+            throw new ServiceJDBCException(e.getMessage(), e);
+        }
+    }
 }

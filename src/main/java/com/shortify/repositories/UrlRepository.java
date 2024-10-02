@@ -79,4 +79,19 @@ public List<Url> getUrlsByUser(int user_id) throws SQLException{
             }
         }
     }
+
+    public int updateOriginalUrl(int idUser, int idUrl, String newOriginalUrl) throws SQLException{
+        try(PreparedStatement ps = conn.prepareStatement("""
+        UPDATE urls 
+        SET originalUrl = ?
+        where id = ? and user_id = ?
+        """)){
+            ps.setString(1, newOriginalUrl);
+            ps.setInt(2, idUrl);
+            ps.setInt(3, idUser);
+
+            int affectRows = ps.executeUpdate();
+            return affectRows;
+        }
+    }
 }
