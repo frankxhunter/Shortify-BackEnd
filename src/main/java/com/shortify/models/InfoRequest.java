@@ -3,12 +3,18 @@ package com.shortify.models;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class InfoRequest {
+    private int idUrl;
     private String ip;
     private String browser;
     private String os;
     private String architecture;
 
-    public InfoRequest(HttpServletRequest req){
+    public InfoRequest() {
+    }
+
+    public InfoRequest(HttpServletRequest req, int url_id) {
+
+        idUrl = url_id;
 
         // Obtener la IP
         ip = getClientIp(req);
@@ -67,6 +73,14 @@ public class InfoRequest {
 
     public String getOs() {
         return os;
+    }
+
+    public int getIdUrl() {
+        return idUrl;
+    }
+
+    public void setIdUrl(int idUser) {
+        this.idUrl = idUser;
     }
 
     public void setOs(String os) {

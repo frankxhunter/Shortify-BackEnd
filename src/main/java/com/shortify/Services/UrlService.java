@@ -17,17 +17,17 @@ public class UrlService {
     @Inject
     UrlRepository urlRepository;
 
-    public String getOriginalUrl(String shortUrl) {
-        String originalURL = "";
+    public Url getOriginalUrl(String shortUrl) {
+        Url resultUrl = null;
         try {
             Url url = urlRepository.findByShortURL(shortUrl);
             if (url != null) {
-                originalURL = url.getOriginalUrl();
+                resultUrl = url;
             }
         } catch (SQLException e) {
             throw new ServiceJDBCException(e.getMessage(), e);
         }
-        return originalURL;
+        return resultUrl;
     }
 
     public String generateUrlAndSave(String originalUrl, User user) {
