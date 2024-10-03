@@ -39,14 +39,15 @@ public class InfoRequestRepository {
     public void save(InfoRequest infoRequest) throws SQLException {
             try (PreparedStatement ps = conn.prepareStatement("""
                     INSERT INTO info_request
-                    (id_url, ip, browser, os, architecture)
-                    VALUES (?, ?, ?, ?, ? )
+                    (id_url, ip, browser, os, architecture, date)
+                    VALUES (?, ?, ?, ?, ?, ? )
                     """)) {
                 ps.setInt(1, infoRequest.getIdUrl());
                 ps.setString(2, infoRequest.getIp());
                 ps.setString(3, infoRequest.getBrowser());
                 ps.setString(4, infoRequest.getOs());
                 ps.setString(5, infoRequest.getArchitecture());
+                ps.setTimestamp(6, infoRequest.getDate());
 
                 ps.executeUpdate();
 
@@ -60,6 +61,7 @@ public class InfoRequestRepository {
         InfoRequest.setBrowser(result.getString("browser"));
         InfoRequest.setOs(result.getString("os"));
         InfoRequest.setArchitecture(result.getString("architecture"));
+        InfoRequest.setDate(result.getTimestamp("date"));
 
         return InfoRequest;
     }

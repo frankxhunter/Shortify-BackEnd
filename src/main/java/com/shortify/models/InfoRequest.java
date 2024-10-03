@@ -1,5 +1,7 @@
 package com.shortify.models;
 
+import java.sql.Timestamp;
+
 import com.google.gson.annotations.Expose;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +17,8 @@ public class InfoRequest {
     private String os;
     @Expose
     private String architecture;
+    @Expose
+    private Timestamp date;
 
     public InfoRequest() {
     }
@@ -23,6 +27,8 @@ public class InfoRequest {
 
         idUrl = url_id;
 
+        this.date = new Timestamp(System.currentTimeMillis());
+        System.out.println("Hora: "+ this.date);
         // Obtener la IP
         ip = getClientIp(req);
 
@@ -122,5 +128,13 @@ public class InfoRequest {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 }
