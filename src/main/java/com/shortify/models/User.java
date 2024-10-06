@@ -55,11 +55,10 @@ public class User {
         boolean result = false;
         if (obj instanceof User) {
             User user = (User) obj;
-            if (user.getPassword() != null && user.getPassword().equals(this.password))
-                if ((user.getUsername() != null && user.getUsername().equals(this.getUsername()))
-                        || (user.getEmail() != null && user.getEmail().equals(this.email))) {
-                    result = true;
-                }
+            if ((user.getUsername() != null && user.getUsername().equals(this.getUsername()))
+                    || (user.getEmail() != null && user.getEmail().equals(this.email))) {
+                result = true;
+            }
         }
         return result;
     }

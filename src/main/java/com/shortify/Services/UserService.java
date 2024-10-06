@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import com.shortify.models.User;
 import com.shortify.repositories.UserRepository;
+import com.shortify.utils.Security;
 import com.shortify.utils.ServiceJDBCException;
 import com.shortify.utils.UserRegisterException;
 import com.shortify.utils.Validate;
@@ -25,7 +26,10 @@ public class UserService {
                         ? userRepository.getUserByUsername(user.getUsername())
                         : userRepository.getUserByEmail(user.getEmail());
                 if (tempUser != null) {
-                    if (tempUser.equals(user)) {
+                    System.out.println("\nContrasenna haseahda:"+ tempUser.getPassword());
+                    System.out.println("\nContrasenna :"+ user.getPassword());
+                    System.out.println(Security.desEncriptationComparation(user.getPassword(), tempUser.getPassword()));
+                    if (tempUser.equals(user) && Security.desEncriptationComparation(user.getPassword(), tempUser.getPassword())) {
                         // Eliminando la contraseña del objeto a devolver por seguridad
                         tempUser.setPassword(null);
                         loggedUser = tempUser;
@@ -53,7 +57,7 @@ public class UserService {
                     throw new UserRegisterException("A user with this email already exists");
                 } else {
                     // En este caso no existe ningun usuario con el mismo username o email
-                    userRepository.createUser(userNew);
+                    userRepository.createUser(userNew, Security.encriptation(userNew.getPassword()));
                     userCreated = userRepository.getUserByEmail(userNew.getUsername());
                     if (userCreated == null) {
                         userCreated = userRepository.getUserByEmail(userNew.getEmail());

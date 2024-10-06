@@ -61,7 +61,7 @@ public class UserRepository {
 
     }
 
-    public void createUser(User user) throws SQLException {
+    public void createUser(User user, String hashedPassword) throws SQLException {
         if (user != null) {
 
             try (PreparedStatement ps = con.prepareStatement("""
@@ -71,7 +71,7 @@ public class UserRepository {
                     """)) {
                 ps.setString(1, user.getUsername());
                 ps.setString(2, user.getEmail());
-                ps.setString(3, user.getPassword());
+                ps.setString(3, hashedPassword);
 
                 ps.executeUpdate();
 
