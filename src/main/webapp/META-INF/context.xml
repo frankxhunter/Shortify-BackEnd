@@ -27,7 +27,7 @@
 
   <Resource name="jdbc/ConnectionMySQL" auth="Container" type="javax.sql.DataSource"
                maxTotal="100" maxIdle="30" maxWaitMillis="10000"
-               username="root" password="root" driverClassName="com.mysql.cj.jdbc.Driver"
-               url="jdbc:mysql://localhost:3306/shortify?serverTimezone=Europe/Madrid"/>
+               username="freedb_shortify_admin" password="J9AkUu3utwM&amp;p58" driverClassName="com.mysql.cj.jdbc.Driver"
+               url="jdbc:mysql://freedb_shortify_admin:J9AkUu3utwM&amp;p58@sql.freedb.tech:3306/freedb_shortify"/>
 
 </Context>
