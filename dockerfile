@@ -1,5 +1,5 @@
 # Usar una imagen de OpenJDK para correr aplicaciones Java
-FROM tomcat:9.0-jdk17
+FROM tomcat:10.1-jdk17
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
