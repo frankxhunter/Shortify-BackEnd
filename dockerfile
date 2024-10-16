@@ -11,7 +11,7 @@ COPY target/shortify.war /usr/local/tomcat/webapps/
 RUN sed -i 's/port="8005"/port="-1"/' /usr/local/tomcat/conf/server.xml
 
 # Exponemos el puerto 8080 para acceder a la aplicacion
-EXPOSE 8080
+EXPOSE 8081
 
 # Comando por defecto para arrancar Tomcat
 CMD ["catalina.sh", "run"]
