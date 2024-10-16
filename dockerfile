@@ -15,3 +15,5 @@ EXPOSE 8080
 
 # Comando por defecto para arrancar Tomcat
 CMD ["catalina.sh", "run"]
+
+# Aqui ya funciona
