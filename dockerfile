@@ -5,7 +5,7 @@ FROM tomcat:10.1-jdk17
 WORKDIR /app
 
 # Copia el contenido WAR de tu aplicacion dentro del contenedor
-COPY target/shortify.war /usr/local/tomcat/webapps/
+COPY target/ROOT.war /usr/local/tomcat/webapps/
 
 # Desactivar el puerto de shutdown en el archivo server.xml
 RUN sed -i 's/port="8005"/port="-1"/' /usr/local/tomcat/conf/server.xml
@@ -15,3 +15,5 @@ EXPOSE 8081
 
 # Comando por defecto para arrancar Tomcat
 CMD ["catalina.sh", "run"]
+
+# Aqui ya funciona
