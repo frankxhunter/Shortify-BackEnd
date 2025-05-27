@@ -1,6 +1,6 @@
-package com.frank.shortiy.shortify.Validators;
+package com.frank.shortify.Validators;
 
-import com.frank.shortiy.shortify.Validators.annotations.UrlFormat;
+import com.frank.shortify.Validators.annotations.UrlFormat;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

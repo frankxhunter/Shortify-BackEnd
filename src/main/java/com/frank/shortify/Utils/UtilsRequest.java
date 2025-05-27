@@ -1,10 +1,19 @@
-package com.frank.shortiy.shortify.Utils;
+package com.frank.shortify.Utils;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UtilsRequest {
 
     private static String baseUrl = null;
+
+    public static void setCookieSession(Authentication auth, HttpServletRequest request) {
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+    }
 
     public static String getBaseUrl(HttpServletRequest request) {
         if (baseUrl == null) {

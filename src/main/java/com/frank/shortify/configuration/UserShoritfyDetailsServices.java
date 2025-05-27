@@ -1,9 +1,8 @@
-package com.frank.shortiy.shortify.configuration;
+package com.frank.shortify.configuration;
 
-import com.frank.shortiy.shortify.models.User;
-import com.frank.shortiy.shortify.services.UserService;
+import com.frank.shortify.models.User;
+import com.frank.shortify.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserShoritfyDetailsServices implements UserDetailsService {
 
-    @Autowired
     private final UserService userService;
 
     @Override

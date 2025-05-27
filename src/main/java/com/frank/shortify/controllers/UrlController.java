@@ -1,7 +1,7 @@
-package com.frank.shortiy.shortify.controllers;
+package com.frank.shortify.controllers;
 
-import com.frank.shortiy.shortify.Validators.annotations.UrlFormat;
-import com.frank.shortiy.shortify.models.Url;
+import com.frank.shortify.Validators.annotations.UrlFormat;
+import com.frank.shortify.models.Url;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

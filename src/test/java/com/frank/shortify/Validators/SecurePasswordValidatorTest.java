@@ -1,4 +1,4 @@
-package com.frank.shortiy.shortify.Validators;
+package com.frank.shortify.Validators;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

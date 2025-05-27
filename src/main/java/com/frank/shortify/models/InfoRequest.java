@@ -1,4 +1,4 @@
-package com.frank.shortiy.shortify.models;
+package com.frank.shortify.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

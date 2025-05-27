@@ -1,4 +1,4 @@
-package com.frank.shortiy.shortify.models;
+package com.frank.shortify.models;
 
 public enum Roles {
     USER, ADMIN

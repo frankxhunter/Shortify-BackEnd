@@ -1,4 +1,4 @@
-package com.frank.shortiy.shortify.controllers;
+package com.frank.shortify.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;

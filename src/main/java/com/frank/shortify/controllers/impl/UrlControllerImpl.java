@@ -1,11 +1,11 @@
-package com.frank.shortiy.shortify.controllers.impl;
+package com.frank.shortify.controllers.impl;
 
-import com.frank.shortiy.shortify.controllers.UrlController;
-import com.frank.shortiy.shortify.exceptions.ResourceNotFoundException;
-import com.frank.shortiy.shortify.models.Url;
-import com.frank.shortiy.shortify.models.User;
-import com.frank.shortiy.shortify.services.UrlService;
-import com.frank.shortiy.shortify.services.UserService;
+import com.frank.shortify.controllers.UrlController;
+import com.frank.shortify.exceptions.ResourceNotFoundException;
+import com.frank.shortify.models.Url;
+import com.frank.shortify.models.User;
+import com.frank.shortify.services.UrlService;
+import com.frank.shortify.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

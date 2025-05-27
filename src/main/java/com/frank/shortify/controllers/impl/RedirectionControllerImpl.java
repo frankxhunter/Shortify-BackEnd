@@ -1,11 +1,11 @@
-package com.frank.shortiy.shortify.controllers.impl;
+package com.frank.shortify.controllers.impl;
 
-import com.frank.shortiy.shortify.controllers.RedirectionController;
-import com.frank.shortiy.shortify.exceptions.ResourceNotFoundException;
-import com.frank.shortiy.shortify.models.InfoRequest;
-import com.frank.shortiy.shortify.models.Url;
-import com.frank.shortiy.shortify.services.InfoRequestService;
-import com.frank.shortiy.shortify.services.UrlService;
+import com.frank.shortify.controllers.RedirectionController;
+import com.frank.shortify.exceptions.ResourceNotFoundException;
+import com.frank.shortify.models.InfoRequest;
+import com.frank.shortify.models.Url;
+import com.frank.shortify.services.InfoRequestService;
+import com.frank.shortify.services.UrlService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +31,7 @@ public class RedirectionControllerImpl implements RedirectionController {
             InfoRequest infoRequest = infoRequestService.getInfoRequestFromHttpRequest(request);
             infoRequest.setUrl(url);
             infoRequestService.save(infoRequest);
-            
+
             url.getInfoRequests().size();
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header(HttpHeaders.LOCATION, url.getOriginalUrl()).build();

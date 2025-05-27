@@ -1,9 +1,11 @@
-package com.frank.shortiy.shortify.services;
+package com.frank.shortify.services;
 
-import com.frank.shortiy.shortify.Utils.UrlHasher;
-import com.frank.shortiy.shortify.models.Url;
-import com.frank.shortiy.shortify.models.User;
-import com.frank.shortiy.shortify.repositories.UrlRepository;
+import com.frank.shortify.Utils.UrlHasher;
+import com.frank.shortify.models.Url;
+import com.frank.shortify.models.User;
+import com.frank.shortify.repositories.UrlRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,9 @@ import java.util.Optional;
 public class UrlService {
     @Autowired
     private UrlRepository repository;
+
+    private final static Logger log = LoggerFactory.getLogger(UrlService.class);
+
 
     public Iterable<Url> getAll(User user) {
         return repository.findByUser(user);
@@ -27,7 +32,9 @@ public class UrlService {
             url = getUrlwithHash(originalUrl, "");
         }
         Optional<Url> urlFinded = repository.findByShortUrl(url.getShortUrl());
-        return urlFinded.orElseGet(() -> repository.save(url));
+        Url urlResult = urlFinded.orElseGet(() -> repository.save(url));
+        log.info("Url created: {}", urlResult);
+        return urlResult;
     }
 
     public Optional<Url> findUrlByShortUrl(String shortUrl) {

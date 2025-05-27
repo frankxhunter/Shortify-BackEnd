@@ -1,5 +1,6 @@
-package com.frank.shortiy.shortify.models;
+package com.frank.shortify.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class User {
     private long id;
     @Column(unique = true)
     private String email;
+    @JsonIgnore
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Url> urls;

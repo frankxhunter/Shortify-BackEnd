@@ -1,6 +1,6 @@
-package com.frank.shortiy.shortify.repositories;
+package com.frank.shortify.repositories;
 
-import com.frank.shortiy.shortify.models.User;
+import com.frank.shortify.models.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

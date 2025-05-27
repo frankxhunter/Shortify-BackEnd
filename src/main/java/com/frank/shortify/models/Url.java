@@ -1,4 +1,4 @@
-package com.frank.shortiy.shortify.models;
+package com.frank.shortify.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,4 +23,14 @@ public class Url {
     private List<InfoRequest> infoRequests;
     private String shortUrl;
     private String originalUrl;
+
+    @Override
+    public String toString() {
+        return "Url{" +
+                "id=" + id +
+                (user != null ? ", user=" + user.getId() : "") +
+                ", shortUrl='" + shortUrl + '\'' +
+                ", originalUrl='" + originalUrl + '\'' +
+                '}';
+    }
 }

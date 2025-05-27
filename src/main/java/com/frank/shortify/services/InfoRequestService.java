@@ -1,9 +1,9 @@
-package com.frank.shortiy.shortify.services;
+package com.frank.shortify.services;
 
-import com.frank.shortiy.shortify.Utils.UtilsRequest;
-import com.frank.shortiy.shortify.models.InfoRequest;
-import com.frank.shortiy.shortify.models.Url;
-import com.frank.shortiy.shortify.repositories.InfoRequestRepository;
+import com.frank.shortify.Utils.UtilsRequest;
+import com.frank.shortify.models.InfoRequest;
+import com.frank.shortify.models.Url;
+import com.frank.shortify.repositories.InfoRequestRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

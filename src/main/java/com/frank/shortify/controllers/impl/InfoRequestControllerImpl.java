@@ -1,10 +1,10 @@
-package com.frank.shortiy.shortify.controllers.impl;
+package com.frank.shortify.controllers.impl;
 
-import com.frank.shortiy.shortify.controllers.InfoRequestController;
-import com.frank.shortiy.shortify.exceptions.ResourceNotFoundException;
-import com.frank.shortiy.shortify.models.InfoRequest;
-import com.frank.shortiy.shortify.services.InfoRequestService;
-import com.frank.shortiy.shortify.services.UrlService;
+import com.frank.shortify.controllers.InfoRequestController;
+import com.frank.shortify.exceptions.ResourceNotFoundException;
+import com.frank.shortify.models.InfoRequest;
+import com.frank.shortify.services.InfoRequestService;
+import com.frank.shortify.services.UrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 

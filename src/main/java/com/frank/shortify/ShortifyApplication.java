@@ -1,4 +1,4 @@
-package com.frank.shortiy.shortify;
+package com.frank.shortify;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

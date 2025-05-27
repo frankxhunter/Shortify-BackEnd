@@ -1,8 +1,8 @@
-package com.frank.shortiy.shortify.services;
+package com.frank.shortify.services;
 
-import com.frank.shortiy.shortify.dto.UserDto;
-import com.frank.shortiy.shortify.models.User;
-import com.frank.shortiy.shortify.repositories.UserRepository;
+import com.frank.shortify.dto.UserDto;
+import com.frank.shortify.models.User;
+import com.frank.shortify.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,6 @@ public class UserService {
     public User save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = repository.save(user);
-        user.setPassword(null);
         return user;
     }
 
