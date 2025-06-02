@@ -37,6 +37,11 @@ public class RedirectionControllerImpl implements RedirectionController {
                     .header(HttpHeaders.LOCATION, url.getOriginalUrl()).build();
         }).orElseThrow(() -> new ResourceNotFoundException("The url is not found"));
     }
+
+    @Override
+    public String checkStatus() {
+        return "ok";
+    }
 //        if (originalUrl.isBlank()) {
 //            return ResponseEntity.notFound().build();
 //        } else {

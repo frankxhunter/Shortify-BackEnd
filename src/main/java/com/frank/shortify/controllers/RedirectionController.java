@@ -15,4 +15,8 @@ public interface RedirectionController {
             @NotBlank(message = "The hash of URL is required")
             @PathVariable String hash,
             HttpServletRequest request);
+
+    @GetMapping
+    String checkStatus();
 }
+
