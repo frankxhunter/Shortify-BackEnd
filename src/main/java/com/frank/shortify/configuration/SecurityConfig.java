@@ -44,7 +44,8 @@ public class SecurityConfig {
 
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:4200",
-                "https://shortify-orpin.vercel.app")); // Frontend
+                "https://shortify-orpin.vercel.app",
+                "https://app.shortfy.link/")); // Frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
