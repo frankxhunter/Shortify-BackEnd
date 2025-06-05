@@ -11,6 +11,6 @@ public class UrlValidator implements ConstraintValidator<UrlFormat, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value != null && value.matches(URL_PATTERN);
+        return value != null && value.matches(URL_PATTERN) && value.length() <= 2048;
     }
 }

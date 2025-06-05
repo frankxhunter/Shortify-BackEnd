@@ -22,6 +22,7 @@ public class Url {
     @JsonBackReference
     private List<InfoRequest> infoRequests;
     private String shortUrl;
+    @Column(length = 2048)
     private String originalUrl;
 
     @Override
