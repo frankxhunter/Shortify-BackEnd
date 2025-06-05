@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class UserDto {
     @NotBlank(message = "The email is required")
-    @Size(min = 8, max = 20, message = "Email must be between 8 and 20 characters")
+    @Size(min = 8, max = 40, message = "Email must be between 8 and 40 characters")
     @Email
     private String email;
 
