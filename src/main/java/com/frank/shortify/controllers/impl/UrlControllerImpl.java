@@ -48,4 +48,10 @@ public class UrlControllerImpl implements UrlController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(urlService.saveUrl(url, user));
     }
+
+    @Override
+    public Url updateUrl(String url, Long id, Principal principal) {
+        User user = userService.findByEmail(principal.getName()).orElse(null);
+        return urlService.updateUrl(id, url, user);
+    }
 }

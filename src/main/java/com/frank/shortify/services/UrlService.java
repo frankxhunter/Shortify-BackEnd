@@ -1,6 +1,7 @@
 package com.frank.shortify.services;
 
 import com.frank.shortify.Utils.UrlHasher;
+import com.frank.shortify.exceptions.ResourceNotFoundException;
 import com.frank.shortify.models.Url;
 import com.frank.shortify.models.User;
 import com.frank.shortify.repositories.UrlRepository;
@@ -13,11 +14,9 @@ import java.util.Optional;
 
 @Service
 public class UrlService {
+    private final static Logger log = LoggerFactory.getLogger(UrlService.class);
     @Autowired
     private UrlRepository repository;
-
-    private final static Logger log = LoggerFactory.getLogger(UrlService.class);
-
 
     public Iterable<Url> getAll(User user) {
         return repository.findByUser(user);
@@ -50,6 +49,18 @@ public class UrlService {
 
     public Optional<Url> findUrl(String email, long id) {
         return repository.findById(id)
-                .filter(url -> url.getUser().getEmail().equals(email));
+                .filter(url -> url.getUser() != null ? url.getUser().getEmail().equals(email) : false);
+    }
+
+    public Url updateUrl(Long id, String urlNewOriginal, User user) {
+        Optional<Url> urlFinded = findUrl(user.getEmail(), id);
+        return urlFinded
+                .filter(url -> url.getUser().getEmail().equals(user.getEmail()))
+                .map(url -> {
+                    url.setOriginalUrl(urlNewOriginal);
+                    return repository.save(url);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("The url with the id: " + id + " not found"));
+
     }
 }

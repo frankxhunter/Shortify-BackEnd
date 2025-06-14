@@ -28,7 +28,6 @@ public class SecurityConfig {
                         .requestMatchers("/urls/create", "/login").permitAll()
                         .requestMatchers("/urls", "/urls/**").authenticated()
                         .anyRequest().permitAll());
-//                .httpBasic(withDefaults());
 
         return http.build();
     }
