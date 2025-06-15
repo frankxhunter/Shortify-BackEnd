@@ -16,7 +16,10 @@ public interface RedirectionController {
             @PathVariable String hash,
             HttpServletRequest request);
 
-    @GetMapping
+    @GetMapping("/checkStatus")
     String checkStatus();
+
+    @GetMapping
+    ResponseEntity<Object> redirectToFrontEnd();
 }
 

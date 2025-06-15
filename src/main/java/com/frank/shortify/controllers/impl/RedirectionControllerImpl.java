@@ -42,12 +42,12 @@ public class RedirectionControllerImpl implements RedirectionController {
     public String checkStatus() {
         return "ok";
     }
-//        if (originalUrl.isBlank()) {
-//            return ResponseEntity.notFound().build();
-//        } else {
-//            return ResponseEntity.status(HttpStatus.FOUND)
-//                    .header(HttpHeaders.LOCATION, originalUrl).build();
-//        }
+
+    @Override
+    public ResponseEntity<Object> redirectToFrontEnd() {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.LOCATION, "https://app.shortfy.link").build();
+    }
 
 
 }
