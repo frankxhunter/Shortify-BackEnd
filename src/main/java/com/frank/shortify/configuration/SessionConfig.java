@@ -18,7 +18,6 @@ public class SessionConfig {
                 SessionCookieConfig session = servletContext.getSessionCookieConfig();
                 session.setMaxAge(60 * 60 * 24 * 7 * 4 * 2); // Two months
                 session.setSecure(true);
-                session.setDomain(".shortfy.link");
                 session.setPath("/");
                 session.setHttpOnly(true);
             }
