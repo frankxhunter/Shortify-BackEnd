@@ -65,6 +65,49 @@ historial de los accesos realizados a través de ellos.
 
 ---
 
+## Docker hub
+
+Este proyecto esta en DockerHub
+como [frankxhunter/shoritfy-backend](https://hub.docker.com/repository/docker/frankxhunter/shortify-backend/general):
+
+Para desplegarlo la imagen se utiliza el siguiente comando:
+
+```cmd
+docker pull frankxhunter/shortify-backend
+```
+
+```cmd
+docker run -d  --name shortify-backend -e POSTGRES_USER=<<postgres>> -e POSTGRES_PASSWORD=<root> -e POSTGRES_DB=<mydb> -p 5432:5432 shortify-backend
+```
+
+## Como crear la base de datos con Docker
+
+```cmd
+docker pull postgres
+```
+
+```cmd
+docker run -d  --name my-postgres -e POSTGRES_USER=<postgres> -e POSTGRES_PASSWORD=<root> -e POSTGRES_DB=<mydb> -p 5432:5432 postgres
+```
+
+## Ejemplo de .env necesario o variables requiridas
+
+```cmd
+MY_DATABASE_URL=jdbc:postgresql://localhost:5432/shortify
+#MY_DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/shortify
+MY_USER=postgres
+MY_PASSWORD=root
+```
+
+## Como deployar el proyecto a traves de docker-compose
+
+Para deployar con docker-compose debes tener el fichero .env en la misma ubicacion que el archivo docker-compose.yml
+Y ejecutar el siguiente comando:
+
+```cmd
+docker compose up -d
+```
+
 ## 📦 Frontend relacionado
 
 ¿Buscas el frontend?  

@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  database:
+    image: postgres:15
+    container_name: shortify-db
+    environment:
+      POSTGRES_USER: ${MY_USER}
+      POSTGRES_PASSWORD: ${MY_PASSWORD}
+      POSTGRES_DB: ${MY_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shortener-network
+
+  backend:
+    image: frankxhunter/shortify-backend
+    container_name: shortify-backend
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${MY_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MY_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MY_PASSWORD}
+    ports:
+      - "8080:8080"
+    networks:
+      - shortener-network
+
+volumes:
+  postgres_data:
+
+networks:
+  shortener-network:
