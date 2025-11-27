@@ -25,7 +25,7 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(crsf -> crsf.disable())
                 .authorizeHttpRequests((request) -> request
-                        .requestMatchers("/urls/create", "/login").permitAll()
+                        .requestMatchers("/urls/create", "/login", "/auth/google").permitAll()
                         .requestMatchers("/urls", "/urls/**").authenticated()
                         .anyRequest().permitAll());
 

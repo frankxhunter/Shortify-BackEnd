@@ -3,6 +3,7 @@ package com.frank.shortify.services;
 import com.frank.shortify.dto.UserDto;
 import com.frank.shortify.models.User;
 import com.frank.shortify.repositories.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,17 @@ public class UserService {
     }
 
     public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        processPassword(user);
         user = repository.save(user);
         return user;
+    }
+
+    private void processPassword(User user) {
+        if (StringUtils.isNotBlank(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+            user.setPassword(null);
+        }
     }
 
     public User convertFromDto(UserDto userDto) {

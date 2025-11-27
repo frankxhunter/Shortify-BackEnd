@@ -38,6 +38,7 @@ historial de los accesos realizados a través de ellos.
 | POST   | `/register`           | Registrar un nuevo usuario               |
 | POST   | `/login`              | Iniciar sesión                           |
 | GET    | `/login`              | Verificar estado de sesión               |
+| POST   | `/google/auth`        | Iniciar session con google               |
 
 > Nota: Puedes ver todos los endpoints y detalles en el código fuente del repositorio.
 
@@ -88,6 +89,9 @@ docker pull postgres
 
 ```cmd
 docker run -d  --name my-postgres -e POSTGRES_USER=<postgres> -e POSTGRES_PASSWORD=<root> -e POSTGRES_DB=<mydb> -p 5432:5432 postgres
+
+// Ejemplo real
+ docker run -d  --name my-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=root -e POSTGRES_DB=shortify -p 5432:5432 postgres  
 ```
 
 ## Ejemplo de .env necesario o variables requiridas

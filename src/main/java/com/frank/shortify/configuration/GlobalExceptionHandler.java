@@ -1,5 +1,6 @@
 package com.frank.shortify.configuration;
 
+import com.frank.shortify.exceptions.GoogleUnauthorizedException;
 import com.frank.shortify.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -87,6 +88,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(GoogleUnauthorizedException.class)
+    public ResponseEntity<?> handleBadCredentialsException(GoogleUnauthorizedException e) {
         log.warn(e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }

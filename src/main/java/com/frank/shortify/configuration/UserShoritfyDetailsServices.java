@@ -26,7 +26,9 @@ public class UserShoritfyDetailsServices implements UserDetailsService {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
 
         return new org.springframework.security.core.userdetails
-                .User(user.getEmail(), user.getPassword(), authorities);
+                .User(user.getEmail(),
+                user.getPassword() != null ? user.getPassword() : "",
+                authorities);
     }
 
 }
