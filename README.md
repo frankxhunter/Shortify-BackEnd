@@ -121,7 +121,7 @@ docker compose up -d
 
 ## 📄 Licencia
 
-Este proyecto se distribuye bajo licencia abierta (puedes añadir la específica si lo deseas).
+Este proyecto se distribuye bajo licencia abierta.
 
 ---
 
