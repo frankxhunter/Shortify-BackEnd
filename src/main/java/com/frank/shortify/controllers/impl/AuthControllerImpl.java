@@ -5,6 +5,7 @@ import com.frank.shortify.controllers.AuthController;
 import com.frank.shortify.dto.GoogleToken;
 import com.frank.shortify.models.Roles;
 import com.frank.shortify.models.User;
+import com.frank.shortify.services.EmailVerificationService;
 import com.frank.shortify.services.GoogleTokenVerifier;
 import com.frank.shortify.services.UrlService;
 import com.frank.shortify.services.UserService;
@@ -40,6 +41,9 @@ public class AuthControllerImpl implements AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private EmailVerificationService emailVerificationService;
+
     record GoogleAuthResponse(String email) {
     }
 
@@ -62,6 +66,16 @@ public class AuthControllerImpl implements AuthController {
         return ResponseEntity.ok(new GoogleAuthResponse(email));
     }
 
+    @Override
+    public ResponseEntity<?> confirmEmail(String token) {
+        try {
+            emailVerificationService.confirmEmail(token);
+            return ResponseEntity.ok("Email confirmed successfully");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
     @NotNull
     private static Authentication authenticateUser(UserDetails userDetails) {
         Authentication authentication =
@@ -79,6 +93,7 @@ public class AuthControllerImpl implements AuthController {
             newUser.setEmail(email);
             newUser.setPassword("");
             newUser.setRole(Roles.USER);
+            newUser.setEmailVerified(true);
             return userService.save(newUser);
         });
     }

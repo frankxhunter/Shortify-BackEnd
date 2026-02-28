@@ -20,4 +20,5 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Url> urls;
     private Roles role;
+    private boolean emailVerified = false;
 }

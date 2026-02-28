@@ -29,6 +29,14 @@ public class UserService {
         return user;
     }
 
+    public User update(User foundUser, UserDto userDto) {
+        User user = convertFromDto(userDto);
+        processPassword(user);
+        foundUser.setPassword(user.getPassword());
+        repository.save(foundUser);
+        return foundUser;
+    }
+
     private void processPassword(User user) {
         if (StringUtils.isNotBlank(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));

@@ -28,6 +28,10 @@ public class UserShoritfyDetailsServices implements UserDetailsService {
         return new org.springframework.security.core.userdetails
                 .User(user.getEmail(),
                 user.getPassword() != null ? user.getPassword() : "",
+                user.isEmailVerified(),
+                true,
+                true,
+                true,
                 authorities);
     }
 

@@ -74,13 +74,19 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Object> handleGeneralException(DataIntegrityViolationException e) {
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException e) {
         e.printStackTrace();
-        if (e.getRootCause() != null && e.getRootCause().getMessage().contains("Duplicate entry") &&
-                e.getRootCause().getMessage().contains("EMAIL")) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Email: An account with this email already exists");
-
+        Throwable cause = e.getRootCause();
+        if (cause != null) {
+            String msg = cause.getMessage();
+            // MySQL
+            boolean mysqlDuplicate = msg.contains("Duplicate entry") && msg.contains("EMAIL");
+            // PostgreSQL
+            boolean postgresDuplicate = msg.contains("duplicate key") || msg.contains("unique constraint");
+            if (mysqlDuplicate || postgresDuplicate) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Email: An account with this email already exists");
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An error ocurred: " + e.getMessage());
