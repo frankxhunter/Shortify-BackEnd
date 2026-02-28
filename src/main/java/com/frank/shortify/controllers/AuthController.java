@@ -21,4 +21,7 @@ public interface AuthController {
 
     @GetMapping("/confirm-email")
     ResponseEntity<?> confirmEmail(@RequestParam("token") @NotBlank(message = "Token is required") String token);
+
+    @PostMapping("/logout")
+    ResponseEntity<?> logout(HttpServletRequest request);
 }

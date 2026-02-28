@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf(crsf -> crsf.disable())
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers("/urls/create", "/login", "/auth/google", "/auth/confirm-email").permitAll()
-                        .requestMatchers("/urls", "/urls/**").authenticated()
+                        .requestMatchers("/urls", "/urls/**", "/auth/logout").authenticated()
                         .anyRequest().permitAll());
 
         return http.build();
