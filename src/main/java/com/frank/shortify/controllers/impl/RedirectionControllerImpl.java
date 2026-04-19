@@ -28,6 +28,7 @@ public class RedirectionControllerImpl implements RedirectionController {
     public ResponseEntity<Object> redirection(String hash, HttpServletRequest request) {
         Optional<Url> originalUrl = urlService.findUrlByShortUrl(hash);
         return originalUrl.map(url -> {
+            urlService.incrementClickCounter(url);
             InfoRequest infoRequest = infoRequestService.getInfoRequestFromHttpRequest(request);
             infoRequest.setUrl(url);
             infoRequestService.save(infoRequest);

@@ -1,14 +1,16 @@
-package com.frank.shortify.configuration;
+package com.frank.shortify.configuration.prod;
 
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile("prod")
 public class CookieConfig {
 
     @Bean
     public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
-        return CookieSameSiteSupplier.ofNone().whenHasName("JSESSIONID");
+        return CookieSameSiteSupplier.ofLax().whenHasName("JSESSIONID");
     }
 }

@@ -1,6 +1,7 @@
 package com.frank.shortify.services;
 
 import com.frank.shortify.Utils.UrlHasher;
+import com.frank.shortify.dto.CreateUrlDto;
 import com.frank.shortify.exceptions.ResourceNotFoundException;
 import com.frank.shortify.models.Url;
 import com.frank.shortify.models.User;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -22,14 +24,15 @@ public class UrlService {
         return repository.findByUser(user);
     }
 
-    public Url saveUrl(String originalUrl, User user) {
+    public Url saveUrl(CreateUrlDto originalUrl, User user) {
         Url url;
         if (user != null) {
-            url = getUrlwithHash(originalUrl, user.getEmail());
+            url = getUrlWithHash(originalUrl, user.getEmail());
             url.setUser(user);
         } else {
-            url = getUrlwithHash(originalUrl, "");
+            url = getUrlWithHash(originalUrl, "");
         }
+
         Optional<Url> urlFinded = repository.findByShortUrl(url.getShortUrl());
         Url urlResult = urlFinded.orElseGet(() -> repository.save(url));
         log.info("Url created: {}", urlResult);
@@ -40,10 +43,13 @@ public class UrlService {
         return repository.findByShortUrl(shortUrl);
     }
 
-    private Url getUrlwithHash(String originalUrl, String email) {
+    private Url getUrlWithHash(CreateUrlDto originalUrl, String email) {
         Url url = new Url();
-        url.setOriginalUrl(originalUrl);
-        url.setShortUrl(UrlHasher.generateHash(email + originalUrl));
+        url.setOriginalUrl(originalUrl.getUrl());
+        url.setShortUrl(UrlHasher.generateHash(email + originalUrl.getUrl() + originalUrl.getName()));
+        url.setName(originalUrl.getName());
+        url.setCreationDate(LocalDateTime.now());
+        url.setClickCounter(0);
         return url;
     }
 
@@ -62,5 +68,10 @@ public class UrlService {
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("The url with the id: " + id + " not found"));
 
+    }
+
+    public void incrementClickCounter(Url url) {
+        url.setClickCounter(url.getClickCounter() + 1);
+        repository.save(url);
     }
 }

@@ -2,6 +2,7 @@ package com.frank.shortify.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -22,11 +23,17 @@ import java.util.List;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(crsf -> crsf.disable())
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session ->
+                        session.sessionFixation().migrateSession())
                 .authorizeHttpRequests((request) -> request
-                        .requestMatchers("/urls/create", "/login", "/auth/google", "/auth/confirm-email").permitAll()
-                        .requestMatchers("/urls", "/urls/**", "/auth/logout").authenticated()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/urls/create/**").permitAll()
+                        .requestMatchers("/api/checkStatus").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/{code:[a-zA-Z0-9]+}").permitAll()
                         .anyRequest().permitAll());
 
         return http.build();
@@ -42,12 +49,17 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of(
+                "http://localhost",
+                "http://192.168.1.52:*",
+                "capacitor://localhost",
                 "http://localhost:4200",
+                "http://localhost:8100",
                 "https://shortify-orpin.vercel.app",
-                "https://app.shortfy.link/")); // Frontend
+                "https://app.shortfy.link")); // Frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
+
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

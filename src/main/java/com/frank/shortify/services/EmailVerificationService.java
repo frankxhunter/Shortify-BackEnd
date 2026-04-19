@@ -41,7 +41,7 @@ public class EmailVerificationService {
 
         tokenRepository.save(token);
 
-        emailService.sendEmailConfirmation(user, tokenValue, frontendBaseUrl);
+        emailService.sendEmailConfirmation(user, tokenValue, frontendBaseUrl.trim());
 
         return tokenValue;
     }

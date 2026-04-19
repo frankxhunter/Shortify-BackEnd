@@ -1,6 +1,7 @@
 package com.frank.shortify.controllers;
 
 import com.frank.shortify.Validators.annotations.UrlFormat;
+import com.frank.shortify.dto.CreateUrlDto;
 import com.frank.shortify.models.Url;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @Validated
-@RequestMapping("/urls")
+@RequestMapping("/api/urls")
 public interface UrlController {
 
     @GetMapping
@@ -29,8 +30,7 @@ public interface UrlController {
     @PostMapping("/create")
     ResponseEntity<Url> createUrl(
             @Valid
-            @NotBlank(message = "The url is required")
-            @UrlFormat String url,
+            @RequestBody CreateUrlDto url,
             Principal principal
     );
 

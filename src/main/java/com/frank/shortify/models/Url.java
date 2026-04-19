@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -21,9 +22,14 @@ public class Url {
     @OneToMany(mappedBy = "url", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonBackReference
     private List<InfoRequest> infoRequests;
+
+    private Integer clickCounter;
+    private String name;
     private String shortUrl;
     @Column(length = 2048)
     private String originalUrl;
+
+    private LocalDateTime creationDate;
 
     @Override
     public String toString() {

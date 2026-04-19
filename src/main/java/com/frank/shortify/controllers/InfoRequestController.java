@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
-@RequestMapping("/urls/{id}/requests")
+@RequestMapping("/api/urls/{id}/requests")
 public interface InfoRequestController {
 
     @GetMapping()

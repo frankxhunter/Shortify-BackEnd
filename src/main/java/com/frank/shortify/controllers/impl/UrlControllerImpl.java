@@ -1,6 +1,7 @@
 package com.frank.shortify.controllers.impl;
 
 import com.frank.shortify.controllers.UrlController;
+import com.frank.shortify.dto.CreateUrlDto;
 import com.frank.shortify.exceptions.ResourceNotFoundException;
 import com.frank.shortify.models.Url;
 import com.frank.shortify.models.User;
@@ -26,13 +27,13 @@ public class UrlControllerImpl implements UrlController {
     @Override
     public Iterable<Url> getAllUrls(Principal principal) {
         return urlService.getAll(
-                userService.findByEmail(principal.getName()).orElse(null)
+                userService.findByEmail(getEmail(principal)).orElse(null)
         );
     }
 
     @Override
     public Url findUrlById(Principal principal, Long id) {
-        return urlService.findUrl(principal.getName(), id).orElseThrow(() -> new ResourceNotFoundException(
+        return urlService.findUrl(getEmail(principal), id).orElseThrow(() -> new ResourceNotFoundException(
                 "Not found the url with id: " + id
         ));
 
@@ -40,10 +41,10 @@ public class UrlControllerImpl implements UrlController {
 
     @PostMapping("/create")
     @Override
-    public ResponseEntity<Url> createUrl(String url, Principal principal) {
+    public ResponseEntity<Url> createUrl(CreateUrlDto url, Principal principal) {
         User user = null;
         if (principal != null) {
-            user = userService.findByEmail(principal.getName()).orElse(null);
+            user = userService.findByEmail(getEmail(principal)).orElse(null);
         }
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(urlService.saveUrl(url, user));
@@ -51,7 +52,14 @@ public class UrlControllerImpl implements UrlController {
 
     @Override
     public Url updateUrl(String url, Long id, Principal principal) {
-        User user = userService.findByEmail(principal.getName()).orElse(null);
+        User user = userService.findByEmail(getEmail(principal)).orElse(null);
         return urlService.updateUrl(id, url, user);
+    }
+
+    private String getEmail(Principal principal) {
+        if (principal != null) {
+            return principal.getName();
+        }
+        return null;
     }
 }
