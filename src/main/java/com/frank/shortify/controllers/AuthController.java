@@ -1,6 +1,7 @@
 package com.frank.shortify.controllers;
 
 import com.frank.shortify.dto.GoogleToken;
+import com.frank.shortify.dto.RefreshTokenRequest;
 import com.frank.shortify.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -38,9 +39,15 @@ public interface AuthController {
             HttpServletRequest request
     ) throws Exception;
 
+    @PostMapping("/refresh")
+    ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest);
+
     @GetMapping("/confirm-email")
     ResponseEntity<?> confirmEmail(@RequestParam("token") @NotBlank(message = "Token is required") String token);
 
     @PostMapping("/logout")
-    ResponseEntity<?> logout(HttpServletRequest request);
+    ResponseEntity<?> logout(
+            HttpServletRequest request,
+            @RequestBody @Valid RefreshTokenRequest refreshTokenRequest
+    );
 }

@@ -1,19 +1,20 @@
 package com.frank.shortify.controllers.impl;
 
-import com.frank.shortify.Utils.UtilsRequest;
+import com.frank.shortify.configuration.JwtService;
 import com.frank.shortify.controllers.AuthController;
 import com.frank.shortify.dto.GoogleToken;
+import com.frank.shortify.dto.RefreshTokenRequest;
 import com.frank.shortify.dto.UserDto;
 import com.frank.shortify.models.Roles;
 import com.frank.shortify.models.User;
 import com.frank.shortify.services.EmailVerificationService;
 import com.frank.shortify.services.GoogleTokenVerifier;
+import com.frank.shortify.services.RefreshTokenService;
 import com.frank.shortify.services.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -47,7 +49,20 @@ public class AuthControllerImpl implements AuthController {
     @Autowired
     private EmailVerificationService emailVerificationService;
 
-    record GoogleAuthResponse(String email) {
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    record AuthResponse(
+            String token,
+            String refreshToken,
+            String tokenType,
+            long expiresInMs,
+            long refreshExpiresInMs,
+            String email
+    ) {
     }
 
     @Override
@@ -73,9 +88,10 @@ public class AuthControllerImpl implements AuthController {
     @Override
     public ResponseEntity<?> logIn(UserDto userDto, HttpServletRequest request) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
-        UtilsRequest.setCookieSession(auth, request);
+        User user = userService.findByEmail(auth.getName())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        return ResponseEntity.ok("Login Successfully");
+        return buildAuthResponse((UserDetails) auth.getPrincipal(), user.getEmail(), user);
     }
 
     @Override
@@ -95,14 +111,44 @@ public class AuthControllerImpl implements AuthController {
         saveUserIfNotExist(email);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Authentication authentication = authenticateUser(userDetails);
+        return buildAuthResponse(userDetails, email, user);
+    }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    @Override
+    public ResponseEntity<?> refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        try {
+            String refreshToken = refreshTokenRequest.getRefreshToken();
+            String email = jwtService.extractUsername(refreshToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        UtilsRequest.setCookieSession(authentication, request);
+            if (!jwtService.isRefreshTokenValid(refreshToken, userDetails)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+            }
 
-        return ResponseEntity.ok(new GoogleAuthResponse(email));
+            User user = userService.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            refreshTokenService.getValidRefreshToken(refreshToken, user);
+
+            String accessToken = jwtService.generateAccessToken(userDetails);
+            String rotatedRefreshToken = refreshTokenService.rotateRefreshToken(refreshToken, user);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .body(new AuthResponse(
+                            accessToken,
+                            rotatedRefreshToken,
+                            "Bearer",
+                            jwtService.getAccessExpirationMs(),
+                            jwtService.getRefreshExpirationMs(),
+                            email
+                    ));
+        } catch (IllegalArgumentException | UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        }
     }
 
     @Override
@@ -116,19 +162,16 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
+    public ResponseEntity<?> logout(HttpServletRequest request, RefreshTokenRequest refreshTokenRequest) {
+        if (refreshTokenRequest != null && refreshTokenRequest.getRefreshToken() != null && !refreshTokenRequest.getRefreshToken().isBlank()) {
+            try {
+                refreshTokenService.revokeRefreshToken(refreshTokenRequest.getRefreshToken());
+            } catch (IllegalArgumentException ignored) {
+                // Logout should remain idempotent even if the refresh token is already invalid.
+            }
         }
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("Logout successfully");
-    }
-
-    @NotNull
-    private static Authentication authenticateUser(UserDetails userDetails) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        return authentication;
+        return ResponseEntity.ok("Logout successfully. Delete the access token on the client side.");
     }
 
     private void saveUserIfNotExist(String email) {
@@ -140,5 +183,21 @@ public class AuthControllerImpl implements AuthController {
             newUser.setEmailVerified(true);
             return userService.save(newUser);
         });
+    }
+
+    private ResponseEntity<AuthResponse> buildAuthResponse(UserDetails userDetails, String email, User user) {
+        String accessToken = jwtService.generateAccessToken(userDetails);
+        String refreshToken = refreshTokenService.createRefreshToken(user);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .body(new AuthResponse(
+                        accessToken,
+                        refreshToken,
+                        "Bearer",
+                        jwtService.getAccessExpirationMs(),
+                        jwtService.getRefreshExpirationMs(),
+                        email
+                ));
     }
 }

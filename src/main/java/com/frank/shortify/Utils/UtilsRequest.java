@@ -1,34 +1,10 @@
 package com.frank.shortify.Utils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 public class UtilsRequest {
 
     private static String baseUrl = null;
-
-    public static void setCookieSession(Authentication auth, HttpServletRequest request) {
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new IllegalArgumentException("Authentication no válida");
-        }
-
-        // Prevenir Session Fixation
-        HttpSession oldSession = request.getSession(false);
-        if (oldSession != null) {
-            oldSession.invalidate();
-        }
-
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(auth);
-        SecurityContextHolder.setContext(context);
-
-        HttpSession session = request.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
-    }
 
     public static String getBaseUrl(HttpServletRequest request) {
         if (baseUrl == null) {
