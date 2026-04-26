@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping()
 public interface RedirectionController {
 
-    @GetMapping("/{hash}")
+    @GetMapping("/{hash:[a-zA-Z0-9]{4,}}")
     ResponseEntity<Object> redirection(
             @NotBlank(message = "The hash of URL is required")
             @PathVariable String hash,

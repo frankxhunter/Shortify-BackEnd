@@ -32,6 +32,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/urls/create/**").permitAll()
                         .requestMatchers("/api/checkStatus").permitAll()
                         .requestMatchers("/api/**").authenticated()
@@ -53,6 +54,7 @@ public class SecurityConfig {
 
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost",
+                "http://localhost:*",
                 "http://192.168.1.52:*",
                 "capacitor://localhost",
                 "http://localhost:4200",
