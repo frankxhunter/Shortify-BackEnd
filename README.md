@@ -1,6 +1,7 @@
 # Shortify Backend
 
-Backend de **Shortify**, una API REST para acortar URLs, registrar accesos a cada enlace y gestionar autenticacion con JWT, refresh token, verificacion por correo y login con Google.
+Backend de **Shortify**, una API REST para acortar URLs, registrar accesos a cada enlace y gestionar autenticacion con
+JWT, refresh token, verificacion por correo y login con Google.
 
 ## Resumen
 
@@ -13,6 +14,8 @@ Backend de **Shortify**, una API REST para acortar URLs, registrar accesos a cad
 - Usa access token y refresh token.
 
 ## Stack
+
+![favicon.svg](../../../IONIC/Shortfy/src/assets/icon/favicon.svg)
 
 - Java 21
 - Spring Boot 3.4.4
@@ -28,31 +31,31 @@ Backend de **Shortify**, una API REST para acortar URLs, registrar accesos a cad
 
 ### `Url`
 
-Representa una URL acortada.
+Representa una URL acortada.![favicon.svg](../../../IONIC/Shortfy/src/assets/icon/favicon.svg)
 
 Campos que devuelve la API:
 
-| Campo | Tipo | Descripcion |
-|---|---|---|
-| `id` | `long` | Identificador interno |
-| `clickCounter` | `integer` | Numero de clics registrados |
-| `name` | `string \| null` | Nombre opcional del enlace |
-| `shortUrl` | `string` | Hash corto generado por el backend |
-| `originalUrl` | `string` | URL original |
-| `creationDate` | `datetime` | Fecha de creacion |
+| Campo          | Tipo             | Descripcion                        |
+|----------------|------------------|------------------------------------|
+| `id`           | `long`           | Identificador interno              |
+| `clickCounter` | `integer`        | Numero de clics registrados        |
+| `name`         | `string \| null` | Nombre opcional del enlace         |
+| `shortUrl`     | `string`         | Hash corto generado por el backend |
+| `originalUrl`  | `string`         | URL original                       |
+| `creationDate` | `datetime`       | Fecha de creacion                  |
 
 ### `InfoRequest`
 
 Representa un acceso registrado sobre una URL.
 
-| Campo | Tipo | Descripcion |
-|---|---|---|
-| `id` | `long` | Identificador del acceso |
-| `ip` | `string` | IP detectada |
-| `browser` | `string` | Navegador detectado |
-| `os` | `string` | Sistema operativo detectado |
-| `architecture` | `string` | Arquitectura detectada |
-| `date` | `timestamp` | Fecha del acceso |
+| Campo          | Tipo        | Descripcion                 |
+|----------------|-------------|-----------------------------|
+| `id`           | `long`      | Identificador del acceso    |
+| `ip`           | `string`    | IP detectada                |
+| `browser`      | `string`    | Navegador detectado         |
+| `os`           | `string`    | Sistema operativo detectado |
+| `architecture` | `string`    | Arquitectura detectada      |
+| `date`         | `timestamp` | Fecha del acceso            |
 
 ## DTOs de entrada
 
@@ -145,33 +148,33 @@ http://localhost:8080
 
 ### Estado y redireccion
 
-| Metodo | Ruta | Auth | Descripcion |
-|---|---|---|---|
-| `GET` | `/api/checkStatus` | No | Health check simple. Devuelve `ok` |
-| `GET` | `/` | No | Redirige al frontend `https://app.shortfy.link` |
-| `GET` | `/{hash}` | No | Redirige a la URL original y registra el acceso |
+| Metodo | Ruta               | Auth | Descripcion                                     |
+|--------|--------------------|------|-------------------------------------------------|
+| `GET`  | `/api/checkStatus` | No   | Health check simple. Devuelve `ok`              |
+| `GET`  | `/`                | No   | Redirige al frontend `https://app.shortfy.link` |
+| `GET`  | `/{hash}`          | No   | Redirige a la URL original y registra el acceso |
 
 ### Autenticacion
 
-| Metodo | Ruta | Auth | Descripcion |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | No | Registra usuario y envia verificacion por email |
-| `POST` | `/api/auth/login` | No | Login con email y password |
-| `GET` | `/api/auth/login` | Si | Comprueba sesion actual; devuelve el email autenticado |
-| `POST` | `/api/auth/google` | No | Login o alta con token de Google |
-| `POST` | `/api/auth/refresh` | No | Rota refresh token y devuelve nuevo access token |
-| `GET` | `/api/auth/confirm-email?token=...` | No | Confirma el correo del usuario |
-| `POST` | `/api/auth/logout` | No | Revoca el refresh token recibido |
+| Metodo | Ruta                                | Auth | Descripcion                                            |
+|--------|-------------------------------------|------|--------------------------------------------------------|
+| `POST` | `/api/auth/register`                | No   | Registra usuario y envia verificacion por email        |
+| `POST` | `/api/auth/login`                   | No   | Login con email y password                             |
+| `GET`  | `/api/auth/login`                   | Si   | Comprueba sesion actual; devuelve el email autenticado |
+| `POST` | `/api/auth/google`                  | No   | Login o alta con token de Google                       |
+| `POST` | `/api/auth/refresh`                 | No   | Rota refresh token y devuelve nuevo access token       |
+| `GET`  | `/api/auth/confirm-email?token=...` | No   | Confirma el correo del usuario                         |
+| `POST` | `/api/auth/logout`                  | No   | Revoca el refresh token recibido                       |
 
 ### URLs
 
-| Metodo | Ruta | Auth | Descripcion |
-|---|---|---|---|
-| `GET` | `/api/urls` | Si | Lista URLs del usuario autenticado |
-| `GET` | `/api/urls/{id}` | Si | Obtiene una URL concreta del usuario |
-| `POST` | `/api/urls/create` | No | Crea una URL corta; si hay JWT, se asocia al usuario |
-| `PUT` | `/api/urls/{id}?url=...` | Si | Actualiza la URL original de una URL del usuario |
-| `GET` | `/api/urls/{id}/requests` | Si | Lista accesos registrados de una URL del usuario |
+| Metodo | Ruta                      | Auth | Descripcion                                          |
+|--------|---------------------------|------|------------------------------------------------------|
+| `GET`  | `/api/urls`               | Si   | Lista URLs del usuario autenticado                   |
+| `GET`  | `/api/urls/{id}`          | Si   | Obtiene una URL concreta del usuario                 |
+| `POST` | `/api/urls/create`        | No   | Crea una URL corta; si hay JWT, se asocia al usuario |
+| `PUT`  | `/api/urls/{id}?url=...`  | Si   | Actualiza la URL original de una URL del usuario     |
+| `GET`  | `/api/urls/{id}/requests` | Si   | Lista accesos registrados de una URL del usuario     |
 
 ## Ejemplos de uso
 
@@ -250,26 +253,26 @@ La aplicacion carga configuracion desde variables de entorno y/o `.env`.
 
 ### Requeridas
 
-| Variable | Descripcion |
-|---|---|
-| `MY_DATABASE_URL` | URL JDBC de PostgreSQL |
-| `MY_USER` | Usuario de base de datos |
-| `MY_PASSWORD` | Password de base de datos |
-| `JWT_SECRET` | Secreto para firmar JWT |
+| Variable           | Descripcion                                |
+|--------------------|--------------------------------------------|
+| `MY_DATABASE_URL`  | URL JDBC de PostgreSQL                     |
+| `MY_USER`          | Usuario de base de datos                   |
+| `MY_PASSWORD`      | Password de base de datos                  |
+| `JWT_SECRET`       | Secreto para firmar JWT                    |
 | `GOOGLE_CLIENT_ID` | Client ID de Google para validar ID tokens |
-| `MAIL_HOST` | Host SMTP |
-| `MAIL_PORT` | Puerto SMTP |
-| `MAIL_USERNAME` | Usuario SMTP |
-| `MAIL_PASSWORD` | Password o app password SMTP |
+| `MAIL_HOST`        | Host SMTP                                  |
+| `MAIL_PORT`        | Puerto SMTP                                |
+| `MAIL_USERNAME`    | Usuario SMTP                               |
+| `MAIL_PASSWORD`    | Password o app password SMTP               |
 
 ### Opcionales
 
-| Variable | Descripcion | Default |
-|---|---|---|
-| `JWT_ACCESS_EXPIRATION_MS` | Duracion del access token | `300000` |
-| `JWT_REFRESH_EXPIRATION_MS` | Duracion del refresh token | `2592000000` |
-| `FRONTEND_BASE_URL` | Base URL usada en el email de confirmacion | `http://localhost:4200` |
-| `MY_DATABASE` | Nombre de BD usado en `docker-compose.yml` | Sin default en compose |
+| Variable                    | Descripcion                                | Default                 |
+|-----------------------------|--------------------------------------------|-------------------------|
+| `JWT_ACCESS_EXPIRATION_MS`  | Duracion del access token                  | `300000`                |
+| `JWT_REFRESH_EXPIRATION_MS` | Duracion del refresh token                 | `2592000000`            |
+| `FRONTEND_BASE_URL`         | Base URL usada en el email de confirmacion | `http://localhost:4200` |
+| `MY_DATABASE`               | Nombre de BD usado en `docker-compose.yml` | Sin default en compose  |
 
 ### Ejemplo de `.env`
 
