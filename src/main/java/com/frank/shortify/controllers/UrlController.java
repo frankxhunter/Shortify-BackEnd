@@ -44,4 +44,11 @@ public interface UrlController {
             Principal principal
     );
 
+    @DeleteMapping("/{id}")
+    void deleteUrl(
+            @PathVariable
+            @NotNull Long id,
+            Principal principal
+    );
+
 }

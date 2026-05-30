@@ -56,6 +56,12 @@ public class UrlControllerImpl implements UrlController {
         return urlService.updateUrl(id, url, user);
     }
 
+    @Override
+    public void deleteUrl(Long id, Principal principal) {
+        User user = userService.findByEmail(getEmail(principal)).orElse(null);
+        urlService.deleteUrl(id, user);
+    }
+
     private String getEmail(Principal principal) {
         if (principal != null) {
             return principal.getName();

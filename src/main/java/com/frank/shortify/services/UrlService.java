@@ -74,4 +74,11 @@ public class UrlService {
         url.setClickCounter(url.getClickCounter() + 1);
         repository.save(url);
     }
+
+    public void deleteUrl(Long id, User user) {
+        Optional<Url> urlFinded = findUrl(user.getEmail(), id);
+        urlFinded
+                .filter(url -> url.getUser().getEmail().equals(user.getEmail()))
+                .ifPresent(url -> repository.delete(url));
+    }
 }

@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -23,8 +24,12 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
+
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+
     @Bean
-    SecurityFilterChain defaultFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    SecurityFilterChain defaultFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter, RateLimitingFilter rateLimitingFilter) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
@@ -38,7 +43,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/{code:[a-zA-Z0-9]+}").permitAll()
                         .anyRequest().permitAll())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
