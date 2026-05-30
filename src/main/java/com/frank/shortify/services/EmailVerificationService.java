@@ -5,7 +5,6 @@ import com.frank.shortify.models.User;
 import com.frank.shortify.repositories.EmailVerificationTokenRepository;
 import com.frank.shortify.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +24,9 @@ public class EmailVerificationService {
     @Autowired
     private EmailService emailService;
 
-    @Value("${application.frontend-base-url:http://localhost:4200}")
-    private String frontendBaseUrl;
-
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    public String createVerificationToken(User user) {
+    public String createVerificationToken(User user, String baseUrl) {
         String tokenValue = generateRandomToken();
 
         EmailVerificationToken token = new EmailVerificationToken();
@@ -41,7 +37,7 @@ public class EmailVerificationService {
 
         tokenRepository.save(token);
 
-        emailService.sendEmailConfirmation(user, tokenValue, frontendBaseUrl.trim());
+        emailService.sendEmailConfirmation(user, tokenValue, baseUrl);
 
         return tokenValue;
     }

@@ -31,7 +31,6 @@ services:
       MAIL_PORT: ${MAIL_PORT}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
-      FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
     expose:
       - "8080"
     networks:

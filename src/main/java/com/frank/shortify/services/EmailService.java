@@ -16,8 +16,8 @@ public class EmailService {
     @Value("${spring.mail.username:}")
     private String fromAddress;
 
-    public void sendEmailConfirmation(User user, String token, String baseUrlFront) {
-        String confirmUrl = baseUrlFront + "/confirm-email?token=" + token;
+    public void sendEmailConfirmation(User user, String token, String baseUrl) {
+        String confirmUrl = baseUrl + "/api/auth/confirm-email?token=" + token;
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());

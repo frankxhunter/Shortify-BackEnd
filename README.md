@@ -15,8 +15,6 @@ JWT, refresh token, verificacion por correo y login con Google.
 
 ## Stack
 
-![favicon.svg](../../../IONIC/Shortfy/src/assets/icon/favicon.svg)
-
 - Java 21
 - Spring Boot 3.4.4
 - Spring Web
@@ -31,7 +29,7 @@ JWT, refresh token, verificacion por correo y login con Google.
 
 ### `Url`
 
-Representa una URL acortada.![favicon.svg](../../../IONIC/Shortfy/src/assets/icon/favicon.svg)
+Representa una URL acortada.
 
 Campos que devuelve la API:
 
@@ -267,12 +265,11 @@ La aplicacion carga configuracion desde variables de entorno y/o `.env`.
 
 ### Opcionales
 
-| Variable                    | Descripcion                                | Default                 |
-|-----------------------------|--------------------------------------------|-------------------------|
-| `JWT_ACCESS_EXPIRATION_MS`  | Duracion del access token                  | `300000`                |
-| `JWT_REFRESH_EXPIRATION_MS` | Duracion del refresh token                 | `2592000000`            |
-| `FRONTEND_BASE_URL`         | Base URL usada en el email de confirmacion | `http://localhost:4200` |
-| `MY_DATABASE`               | Nombre de BD usado en `docker-compose.yml` | Sin default en compose  |
+| Variable                    | Descripcion                                | Default                |
+|-----------------------------|--------------------------------------------|------------------------|
+| `JWT_ACCESS_EXPIRATION_MS`  | Duracion del access token                  | `300000`               |
+| `JWT_REFRESH_EXPIRATION_MS` | Duracion del refresh token                 | `2592000000`           |
+| `MY_DATABASE`               | Nombre de BD usado en `docker-compose.yml` | Sin default en compose |
 
 ### Ejemplo de `.env`
 
@@ -293,7 +290,6 @@ MAIL_PORT=587
 MAIL_USERNAME=no-reply@example.com
 MAIL_PASSWORD=your-app-password
 
-FRONTEND_BASE_URL=http://localhost:4200
 ```
 
 ## Ejecucion local

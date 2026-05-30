@@ -13,6 +13,7 @@ import com.frank.shortify.services.RefreshTokenService;
 import com.frank.shortify.services.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -73,16 +75,25 @@ public class AuthControllerImpl implements AuthController {
             User user = userService.convertFromDto(userDto);
             user.setRole(Roles.USER);
             userService.save(user);
-            emailVerificationService.createVerificationToken(user);
+            emailVerificationService.createVerificationToken(user, getUriString(request));
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered. Please check your email to confirm your account.");
         } else if (!foundUser.get().isEmailVerified()) {
             User existingUser = foundUser.get();
             userService.update(existingUser, userDto);
             emailVerificationService.deleteTokensForUser(existingUser);
-            emailVerificationService.createVerificationToken(existingUser);
+            emailVerificationService.createVerificationToken(existingUser, getUriString(request));
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered. Please check your email to confirm your account.");
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("A user with this email already exist");
+    }
+
+    @NotNull
+    private static String getUriString(HttpServletRequest request) {
+        return ServletUriComponentsBuilder
+                .fromRequestUri(request)
+                .replacePath(null)
+                .build()
+                .toUriString();
     }
 
     @Override
