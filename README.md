@@ -1,140 +1,27 @@
 # Shortify Backend
 
-Backend de **Shortify**, una API REST para acortar URLs, registrar accesos a cada enlace y gestionar autenticacion con
-JWT, refresh token, verificacion por correo y login con Google.
+Backend de **Shortify**, una API REST para acortar URLs, registrar accesos a cada enlace y gestionar autenticacion con JWT, refresh token, verificacion por correo y login con Google.
 
 ## Resumen
 
 - Crea URLs cortas a partir de enlaces largos.
 - Permite crear enlaces de forma anonima o autenticada.
-- Guarda estadisticas basicas de acceso: IP, navegador, sistema operativo, arquitectura y fecha.
-- Incluye autenticacion con email/password.
-- Soporta verificacion de correo.
-- Soporta login con Google ID token.
-- Usa access token y refresh token.
+- Guarda estadisticas de acceso: IP, navegador, sistema operativo, arquitectura y fecha.
+- Autenticacion con email/password y verifyicacion de correo.
+- Login con Google ID token.
+- Access token + refresh token con rotacion.
+- Rate limiting por IP (100 req/min).
+- Actualizacion en tiempo real del contador de clics via WebSocket.
 
 ## Stack
 
 - Java 21
 - Spring Boot 3.4.4
-- Spring Web
-- Spring Security
-- Spring Data JPA
-- Spring Validation
+- Spring Web / Security / Data JPA / Validation / Mail
+- Spring WebSocket (STOMP)
 - PostgreSQL
-- Spring Mail
+- Bucket4j (rate limiting)
 - Maven
-
-## Modelo principal
-
-### `Url`
-
-Representa una URL acortada.
-
-Campos que devuelve la API:
-
-| Campo          | Tipo             | Descripcion                        |
-|----------------|------------------|------------------------------------|
-| `id`           | `long`           | Identificador interno              |
-| `clickCounter` | `integer`        | Numero de clics registrados        |
-| `name`         | `string \| null` | Nombre opcional del enlace         |
-| `shortUrl`     | `string`         | Hash corto generado por el backend |
-| `originalUrl`  | `string`         | URL original                       |
-| `creationDate` | `datetime`       | Fecha de creacion                  |
-
-### `InfoRequest`
-
-Representa un acceso registrado sobre una URL.
-
-| Campo          | Tipo        | Descripcion                 |
-|----------------|-------------|-----------------------------|
-| `id`           | `long`      | Identificador del acceso    |
-| `ip`           | `string`    | IP detectada                |
-| `browser`      | `string`    | Navegador detectado         |
-| `os`           | `string`    | Sistema operativo detectado |
-| `architecture` | `string`    | Arquitectura detectada      |
-| `date`         | `timestamp` | Fecha del acceso            |
-
-## DTOs de entrada
-
-### `UserDto`
-
-Se usa en `register` y `login`.
-
-```json
-{
-  "email": "user@example.com",
-  "password": "StrongPass1!"
-}
-```
-
-Reglas:
-
-- `email`: obligatorio, entre 8 y 40 caracteres, formato email.
-- `password`: obligatoria, entre 8 y 20 caracteres y validada como password segura.
-
-### `CreateUrlDto`
-
-Se usa en `POST /api/urls/create`.
-
-```json
-{
-  "url": "https://example.com/very/long/path",
-  "name": "Mi enlace"
-}
-```
-
-Reglas:
-
-- `url`: obligatoria y con formato de URL valido.
-- `name`: opcional; si se informa, debe tener entre 2 y 80 caracteres.
-
-### `GoogleToken`
-
-Se usa en `POST /api/auth/google`.
-
-```json
-{
-  "token": "google-id-token"
-}
-```
-
-### `RefreshTokenRequest`
-
-Se usa en `POST /api/auth/refresh` y `POST /api/auth/logout`.
-
-```json
-{
-  "refreshToken": "jwt-refresh-token"
-}
-```
-
-## Autenticacion
-
-La API usa el header:
-
-```http
-Authorization: Bearer <access_token>
-```
-
-Respuesta de autenticacion en `login`, `google` y `refresh`:
-
-```json
-{
-  "token": "access-jwt",
-  "refreshToken": "refresh-jwt",
-  "tokenType": "Bearer",
-  "expiresInMs": 300000,
-  "refreshExpiresInMs": 2592000000,
-  "email": "user@example.com"
-}
-```
-
-Notas:
-
-- `POST /api/urls/create` es publico.
-- El resto de rutas bajo `/api/**` requieren JWT, salvo `/api/auth/**` y `/api/checkStatus`.
-- Un usuario registrado con email/password debe confirmar su correo para poder autenticarse.
 
 ## Endpoints
 
@@ -144,106 +31,451 @@ Base URL local:
 http://localhost:8080
 ```
 
-### Estado y redireccion
+---
 
-| Metodo | Ruta               | Auth | Descripcion                                     |
-|--------|--------------------|------|-------------------------------------------------|
-| `GET`  | `/api/checkStatus` | No   | Health check simple. Devuelve `ok`              |
-| `GET`  | `/`                | No   | Redirige al frontend `https://app.shortfy.link` |
-| `GET`  | `/{hash}`          | No   | Redirige a la URL original y registra el acceso |
+### Autenticacion (`/api/auth`)
 
-### Autenticacion
+---
 
-| Metodo | Ruta                                | Auth | Descripcion                                            |
-|--------|-------------------------------------|------|--------------------------------------------------------|
-| `POST` | `/api/auth/register`                | No   | Registra usuario y envia verificacion por email        |
-| `POST` | `/api/auth/login`                   | No   | Login con email y password                             |
-| `GET`  | `/api/auth/login`                   | Si   | Comprueba sesion actual; devuelve el email autenticado |
-| `POST` | `/api/auth/google`                  | No   | Login o alta con token de Google                       |
-| `POST` | `/api/auth/refresh`                 | No   | Rota refresh token y devuelve nuevo access token       |
-| `GET`  | `/api/auth/confirm-email?token=...` | No   | Confirma el correo del usuario                         |
-| `POST` | `/api/auth/logout`                  | No   | Revoca el refresh token recibido                       |
+#### `POST /api/auth/register` -- Registrar usuario
 
-### URLs
+Crea un usuario y envia un email de verificacion.
 
-| Metodo | Ruta                      | Auth | Descripcion                                          |
-|--------|---------------------------|------|------------------------------------------------------|
-| `GET`  | `/api/urls`               | Si   | Lista URLs del usuario autenticado                   |
-| `GET`  | `/api/urls/{id}`          | Si   | Obtiene una URL concreta del usuario                 |
-| `POST` | `/api/urls/create`        | No   | Crea una URL corta; si hay JWT, se asocia al usuario |
-| `PUT`  | `/api/urls/{id}?url=...`  | Si   | Actualiza la URL original de una URL del usuario     |
-| `GET`  | `/api/urls/{id}/requests` | Si   | Lista accesos registrados de una URL del usuario     |
+**Request body:**
 
-## Ejemplos de uso
-
-### Registrar usuario
-
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "StrongPass1!"
-  }'
+```json
+{
+  "email": "user@example.com",
+  "password": "StrongPass1!"
+}
 ```
 
-### Login
+| Campo      | Tipo     | Reglas                                     |
+|------------|----------|--------------------------------------------|
+| `email`    | `string` | Obligatorio, 8-40 chars, formato email     |
+| `password` | `string` | Obligatorio, 8-20 chars, mayus, minus, digito, simbolo |
 
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "StrongPass1!"
-  }'
+**Response:** `201 Created`
+```
+User registered. Please check your email to confirm your account.
 ```
 
-### Crear URL corta de forma anonima
+| Status | Significado                          |
+|--------|--------------------------------------|
+| `201`  | Usuario registrado, email enviado    |
+| `409`  | El email ya existe y ya esta verificado |
+| `400`  | Validacion fallida                   |
 
-```bash
-curl -X POST http://localhost:8080/api/urls/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://example.com/article/123",
-    "name": "Articulo"
-  }'
+> Si el email ya existe pero no esta verificado, se reenvia el email y se actualiza la password.
+
+---
+
+#### `POST /api/auth/login` -- Iniciar sesion
+
+**Request body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "StrongPass1!"
+}
 ```
 
-### Crear URL corta autenticado
+**Response:** `200 OK`
 
-```bash
-curl -X POST http://localhost:8080/api/urls/create \
-  -H "Authorization: Bearer <access_token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://example.com/private",
-    "name": "Privada"
-  }'
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "tokenType": "Bearer",
+  "expiresInMs": 300000,
+  "refreshExpiresInMs": 2592000000,
+  "email": "user@example.com"
+}
 ```
 
-### Listar URLs del usuario
+| Campo                | Tipo     | Descripcion                       |
+|----------------------|----------|-----------------------------------|
+| `token`              | `string` | Access token JWT                  |
+| `refreshToken`       | `string` | Refresh token JWT                 |
+| `tokenType`          | `string` | Siempre `"Bearer"`                |
+| `expiresInMs`        | `long`   | TTL del access token en ms        |
+| `refreshExpiresInMs` | `long`   | TTL del refresh token en ms       |
+| `email`              | `string` | Email del usuario autenticado     |
 
-```bash
-curl http://localhost:8080/api/urls \
-  -H "Authorization: Bearer <access_token>"
+El access token tambien se devuelve en el header `Authorization: Bearer <token>`.
+
+| Status | Significado                     |
+|--------|---------------------------------|
+| `200`  | Login exitoso                   |
+| `403`  | Credenciales incorrectas        |
+| `400`  | Validacion fallida              |
+
+---
+
+#### `GET /api/auth/login` -- Verificar sesion
+
+Requiere JWT.
+
+**Response:** `200 OK`
+```
+user@example.com
 ```
 
-### Ver accesos de una URL
+| Status | Significado          |
+|--------|----------------------|
+| `200`  | Email del usuario    |
+| `403`  | No autenticado       |
 
-```bash
-curl http://localhost:8080/api/urls/1/requests \
-  -H "Authorization: Bearer <access_token>"
+---
+
+#### `POST /api/auth/google` -- Login con Google
+
+**Request body:**
+
+```json
+{
+  "token": "google-id-token"
+}
 ```
 
-### Refrescar tokens
+**Response:** `200 OK` -- Misma estructura que `login`.
 
-```bash
-curl -X POST http://localhost:8080/api/auth/refresh \
-  -H "Content-Type: application/json" \
-  -d '{
-    "refreshToken": "<refresh_token>"
-  }'
+| Status | Significado                        |
+|--------|------------------------------------|
+| `200`  | Login exitoso                      |
+| `403`  | Token de Google invalido           |
+| `400`  | Validacion fallida                 |
+
+> Si el usuario no existe, se crea automaticamente con `emailVerified = true`.
+
+---
+
+#### `POST /api/auth/refresh` -- Rotar tokens
+
+**Request body:**
+
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9..."
+}
 ```
+
+**Response:** `200 OK` -- Misma estructura que `login`, con nuevos tokens.
+
+| Status | Significado                         |
+|--------|-------------------------------------|
+| `200`  | Nuevo access + refresh token        |
+| `401`  | Refresh token invalido, revocado o expirado |
+
+> El refresh token anterior se revoca (token rotation).
+
+---
+
+#### `GET /api/auth/confirm-email` -- Confirmar email
+
+**Query param:** `token` (string)
+
+```
+GET /api/auth/confirm-email?token=abc123...
+```
+
+**Response:** `200 OK`
+```
+Email confirmed successfully
+```
+
+| Status | Significado                                   |
+|--------|-----------------------------------------------|
+| `200`  | Email confirmado                              |
+| `400`  | Token invalido, expirado o ya usado           |
+
+---
+
+#### `POST /api/auth/logout` -- Cerrar sesion
+
+**Request body:**
+
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+**Response:** `200 OK`
+```
+Logout successfully. Delete the access token on the client side.
+```
+
+> El refresh token se revoca. Si ya era invalido, se ignora silenciosamente.
+
+---
+
+### URLs (`/api/urls`)
+
+---
+
+#### `GET /api/urls` -- Listar URLs del usuario
+
+Requiere JWT.
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": 1,
+    "clickCounter": 42,
+    "name": "Mi enlace",
+    "shortUrl": "aB3xK9mZ",
+    "originalUrl": "https://example.com/muy/larga",
+    "creationDate": "2025-03-15T10:30:00"
+  }
+]
+```
+
+| Campo          | Tipo       | Descripcion                         |
+|----------------|------------|-------------------------------------|
+| `id`           | `long`     | Identificador interno               |
+| `clickCounter` | `integer`  | Numero de accesos registrados       |
+| `name`         | `string`   | Nombre opcional del enlace          |
+| `shortUrl`     | `string`   | Hash corto de 8 caracteres          |
+| `originalUrl`  | `string`   | URL original                        |
+| `creationDate` | `datetime` | Fecha de creacion                   |
+
+> Solo devuelve las URLs del usuario autenticado.
+
+---
+
+#### `GET /api/urls/{id}` -- Obtener una URL
+
+Requiere JWT.
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": 1,
+  "clickCounter": 42,
+  "name": "Mi enlace",
+  "shortUrl": "aB3xK9mZ",
+  "originalUrl": "https://example.com/muy/larga",
+  "creationDate": "2025-03-15T10:30:00"
+}
+```
+
+| Status | Significado                    |
+|--------|--------------------------------|
+| `200`  | URL encontrada                 |
+| `404`  | URL no encontrada o no es tuya |
+
+---
+
+#### `POST /api/urls/create` -- Crear URL corta
+
+Publico. Si se envia JWT, la URL se asocia al usuario.
+
+**Request body:**
+
+```json
+{
+  "url": "https://example.com/muy/larga",
+  "name": "Mi enlace"
+}
+```
+
+| Campo  | Tipo     | Reglas                                |
+|--------|----------|---------------------------------------|
+| `url`  | `string` | Obligatorio, URL valida (http/https/ftp), max 2048 chars |
+| `name` | `string` | Opcional, 2-80 caracteres o vacio     |
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": 1,
+  "clickCounter": 0,
+  "name": "Mi enlace",
+  "shortUrl": "aB3xK9mZ",
+  "originalUrl": "https://example.com/muy/larga",
+  "creationDate": "2025-03-15T10:30:00"
+}
+```
+
+| Status | Significado          |
+|--------|----------------------|
+| `201`  | URL creada           |
+| `400`  | Validacion fallida   |
+
+> El hash se genera con SHA-256(email + url + name) truncado a 8 chars Base64URL. Si ya existe, devuelve la URL existente (deduplicacion).
+
+---
+
+#### `PUT /api/urls/{id}` -- Actualizar URL original
+
+Requiere JWT. El body es un string plano con la nueva URL.
+
+**Request body** (raw text):
+```
+https://example.com/nueva-url
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": 1,
+  "clickCounter": 42,
+  "name": "Mi enlace",
+  "shortUrl": "aB3xK9mZ",
+  "originalUrl": "https://example.com/nueva-url",
+  "creationDate": "2025-03-15T10:30:00"
+}
+```
+
+| Status | Significado                              |
+|--------|------------------------------------------|
+| `200`  | URL actualizada                          |
+| `400`  | Validacion fallida                       |
+| `404`  | URL no encontrada o no es tuya           |
+
+---
+
+#### `DELETE /api/urls/{id}` -- Eliminar URL
+
+Requiere JWT.
+
+**Response:** `204 No Content`
+
+| Status | Significado                |
+|--------|----------------------------|
+| `204`  | URL eliminada              |
+
+> Si la URL no pertenece al usuario, la operacion es un no-op (no hay error).
+
+---
+
+### Accesos (`/api/urls/{id}/requests`)
+
+---
+
+#### `GET /api/urls/{id}/requests` -- Listar accesos
+
+Requiere JWT. Lista los accesos registrados de una URL del usuario.
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": 1,
+    "ip": "192.168.1.1",
+    "browser": "Chrome",
+    "os": "Windows",
+    "architecture": "64-bit",
+    "date": "2025-03-15T10:30:00.000+00:00"
+  }
+]
+```
+
+| Campo          | Tipo        | Descripcion                     |
+|----------------|-------------|---------------------------------|
+| `id`           | `long`      | Identificador del acceso        |
+| `ip`           | `string`    | IP del cliente                  |
+| `browser`      | `string`    | Chrome / Firefox / Safari / Edge / Unknown |
+| `os`           | `string`    | Windows / MacOS / Unix / Android / iOS / Unknown |
+| `architecture` | `string`    | 64-bit / 32-bit / Unknown       |
+| `date`         | `timestamp` | Fecha y hora del acceso         |
+
+| Status | Significado                    |
+|--------|--------------------------------|
+| `200`  | Lista de accesos               |
+| `404`  | URL no encontrada o no es tuya |
+
+---
+
+### Redireccion y estado
+
+---
+
+#### `GET /{hash}` -- Redirigir a URL original
+
+**Path param:** `hash` (string, 4+ caracteres alfanumericos)
+
+Redirige al navegador a la URL original y registra el acceso (IP, browser, OS, arquitectura, fecha).
+
+**Response:** `302 Found`
+- Header: `Location: https://example.com/original`
+
+| Status | Significado     |
+|--------|-----------------|
+| `302`  | Redireccion     |
+| `404`  | Hash no encontrado |
+
+> Ademas incrementa `clickCounter` y notifica via WebSocket a `/topic/url/{id}`.
+
+---
+
+#### `GET /api/checkStatus` -- Health check
+
+**Response:** `200 OK`
+```
+ok
+```
+
+---
+
+#### `GET /` -- Redirigir al frontend
+
+**Response:** `302 Found`
+- Header: `Location: https://app.shortfy.link`
+
+---
+
+## Autenticacion
+
+La API usa el header:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+| Endpoint pattern         | Seguridad      |
+|--------------------------|----------------|
+| `/api/auth/**`           | Publico        |
+| `/api/urls/create`       | Publico        |
+| `/api/checkStatus`       | Publico        |
+| `/{hash:[a-zA-Z0-9]+}`  | Publico        |
+| `/`                      | Publico        |
+| `/ws/**`                 | Publico        |
+| Otros `/api/**`          | Requiere JWT   |
+
+- Un usuario registrado con email/password debe confirmar su correo antes de poder autenticarse.
+- Los usuarios de Google se crean con `emailVerified = true` automaticamente.
+
+## WebSocket
+
+El servidor expone un endpoint STOMP para actualizaciones en tiempo real del contador de clics.
+
+- **Endpoint:** `/ws`
+- **Broker:** `/topic`
+- **Suscripcion:** `/topic/url/{urlId}`
+- **Mensaje:** El nuevo valor de `clickCounter` (integer)
+
+Cuando alguien visita `/{hash}`, el backend envia el contador actualizado a todos los clientes suscritos a esa URL.
+
+## Manejo de errores
+
+La aplicacion devuelve errores en texto plano.
+
+| Status | Significado                                      |
+|--------|--------------------------------------------------|
+| `400`  | Validaciones, parametros invalidos, token confirmacion invalido/expirado |
+| `401`  | Refresh token invalido, revocado o expirado      |
+| `403`  | Credenciales incorrectas o token Google invalido |
+| `404`  | Recurso no encontrado                            |
+| `409`  | Email ya existente                               |
+| `500`  | Error interno                                    |
 
 ## Variables de entorno
 
@@ -269,7 +501,7 @@ La aplicacion carga configuracion desde variables de entorno y/o `.env`.
 |-----------------------------|--------------------------------------------|------------------------|
 | `JWT_ACCESS_EXPIRATION_MS`  | Duracion del access token                  | `300000`               |
 | `JWT_REFRESH_EXPIRATION_MS` | Duracion del refresh token                 | `2592000000`           |
-| `MY_DATABASE`               | Nombre de BD usado en `docker-compose.yml` | Sin default en compose |
+| `MY_DATABASE`               | Nombre de BD usado en `docker-compose.yml` | Sin default            |
 
 ### Ejemplo de `.env`
 
@@ -289,7 +521,6 @@ MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USERNAME=no-reply@example.com
 MAIL_PASSWORD=your-app-password
-
 ```
 
 ## Ejecucion local
@@ -303,13 +534,15 @@ MAIL_PASSWORD=your-app-password
 ### Arrancar en local
 
 ```bash
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-La API quedara disponible en:
+La API quedara disponible en `http://localhost:8080`.
 
-```text
-http://localhost:8080
+### Tests
+
+```bash
+./mvnw test
 ```
 
 ## Docker
@@ -339,21 +572,14 @@ docker build -t shortify-backend .
 docker run -p 8080:8080 --env-file .env shortify-backend
 ```
 
-## Manejo de errores
+### Publicar imagen en Docker Hub
 
-La aplicacion devuelve errores simples en texto plano para validaciones y excepciones comunes.
-
-Casos habituales:
-
-- `400 Bad Request`: validaciones, parametros invalidos, token de confirmacion invalido o expirado.
-- `401 Unauthorized`: refresh token invalido o expirado.
-- `403 Forbidden`: credenciales incorrectas o token de Google invalido.
-- `404 Not Found`: recurso no encontrado.
-- `409 Conflict`: email ya existente.
-- `500 Internal Server Error`: error no controlado.
+```bash
+docker login
+docker tag shortify-backend <tu-usuario>/shortify-backend:latest
+docker push <tu-usuario>/shortify-backend:latest
+```
 
 ## Frontend relacionado
-
-Repositorio del frontend:
 
 [Shortify-Frontend](https://github.com/frankxhunter/Shortify-Frontend)
