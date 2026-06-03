@@ -1,5 +1,6 @@
 package com.frank.shortify.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class SecurityConfig {
                 "capacitor://localhost",
                 "http://localhost:4200",
                 "http://localhost:8100",
-                "https://shortify-orpin.vercel.app",
+                "https://*.vercel.app",
                 "https://app.shortfy.link")); // Frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
