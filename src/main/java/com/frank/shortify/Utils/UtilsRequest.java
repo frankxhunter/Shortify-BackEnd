@@ -14,8 +14,10 @@ public class UtilsRequest {
     }
 
     public static String getClientIp(HttpServletRequest req) {
-        String ip = req.getHeader("X-Forwarder-For");
-        if (ip == null || ip.isEmpty() || ip.equalsIgnoreCase("unknown")) {
+        String ip = req.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isBlank() && !ip.equalsIgnoreCase("unknown")) {
+            ip = ip.split(",")[0].trim();
+        } else {
             ip = req.getRemoteAddr();
         }
         return ip;
