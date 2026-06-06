@@ -10,7 +10,9 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "urls")
+@Table(name = "urls", indexes = {
+        @Index(name = "idx_short_url", columnList = "shortUrl", unique = true)
+})
 public class Url {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
