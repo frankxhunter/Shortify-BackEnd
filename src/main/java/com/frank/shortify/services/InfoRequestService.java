@@ -1,9 +1,11 @@
 package com.frank.shortify.services;
 
 import com.frank.shortify.Utils.UtilsRequest;
+import com.frank.shortify.dto.IpDataExternal;
 import com.frank.shortify.models.InfoRequest;
 import com.frank.shortify.models.Url;
 import com.frank.shortify.repositories.InfoRequestRepository;
+import com.frank.shortify.services.external.IpInfoServiceExternal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class InfoRequestService {
 
     private final InfoRequestRepository infoRequestRepository;
     private final ClickCounterWebSocket clickCounterWebSocket;
+    private final IpInfoServiceExternal ipInfoServiceExternal;
     private final UrlService urlService;
 
     public Iterable<InfoRequest> findByUrl(Url url) {
@@ -44,6 +47,13 @@ public class InfoRequestService {
         urlService.incrementClickCounter(url);
         clickCounterWebSocket.sendIncrement(url.getId(), url.getClickCounter());
         infoRequest.setUrl(url);
+        setCountryValues(infoRequest);
         this.save(infoRequest);
+    }
+
+    private void setCountryValues(InfoRequest infoRequest) {
+        IpDataExternal ipDataExternal = ipInfoServiceExternal.getInfoIp(infoRequest.getIp());
+        infoRequest.setCountry(ipDataExternal.getCountry());
+        infoRequest.setCountryCode(ipDataExternal.getCountryCode());
     }
 }

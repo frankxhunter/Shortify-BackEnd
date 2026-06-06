@@ -22,5 +22,7 @@ public class InfoRequest {
     private String os;
     private String architecture;
     private Timestamp date;
+    private String country;
+    private String countryCode;
 
 }
